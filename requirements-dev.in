@@ -1,0 +1,5 @@
+# Entwicklungs-/Test-Abhängigkeiten (kompiliert nach requirements-dev.txt via:
+#   uv pip compile requirements-dev.in -o requirements-dev.txt)
+-c requirements.txt
+pytest>=8.2
+responses>=0.25

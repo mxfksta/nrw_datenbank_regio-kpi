@@ -1,0 +1,348 @@
+# =============================================================================
+# kpi_spec.yaml — Single Source of Truth für alle EXTERNEN Regional-KPIs
+# =============================================================================
+# Diese Datei definiert je KPI-Cluster die konkreten Kennzahlen, Einheiten und
+# Quellen. Sie wird von src/config.py geladen; Konnektoren richten sich nach
+# den hier definierten Cluster-/Kennzahl-Namen (Konstanten in src/config.py
+# müssen mit den `name`-Feldern hier übereinstimmen — wird per Test geprüft).
+#
+# Scope: AUSSCHLIESSLICH externe, amtliche/öffentliche Quellen.
+# Interne Kennzahlen (Analytics, CRM, Newsletter, Social, Vermarktung) sind
+# explizit NICHT Teil dieses Projekts.
+#
+# Felder je Kennzahl:
+#   kennzahl : Anzeigename (= Spalte `kennzahl` in fact_kpi)
+#   einheit  : Zieleinheit nach Normalisierung
+#   status   : auto     = automatisch beschaffbar (Phase 1)
+#              konfig   = automatisierbar, benötigt aber einmalig verifizierte
+#                         Download-URL / Zugangsdaten (per ENV, siehe README)
+#              manuell  = keine stabile API / überwiegend qualitativ (Phase 2)
+#              optional = nice-to-have, Fehlen ist kein Fehler
+#   hinweis  : fachliche Anmerkung
+#
+# Aggregation (gilt für ALLE numerischen Kennzahlen, siehe src/transform.py):
+#   - "aktuell": neuester verfügbarer Wert inkl. Jahr/Stichtag
+#   - "avg_3j" : Durchschnitt der 3 neuesten verfügbaren Jahre,
+#                nur wenn >= 3 Jahre vorliegen
+# =============================================================================
+
+version: 1
+
+clusters:
+  # ---------------------------------------------------------------------------
+  # PHASE 1 — automatisierbare, amtliche Quellen
+  # ---------------------------------------------------------------------------
+  - name: "Demografie & Fläche"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil / Landesdatenbank NRW / Zensus 2022"
+    kennzahlen:
+      - kennzahl: "Einwohner"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Anteil weiblich"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Anteil Nichtdeutsche"
+        einheit: "%"
+        status: auto
+        hinweis: "Amtlich: Personen ohne deutsche Staatsangehörigkeit (Ausländeranteil)."
+      - kennzahl: "Anteil unter 18-Jährige"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Anteil 18- bis unter 30-Jährige"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Anteil 30- bis unter 50-Jährige"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Anteil 50- bis unter 65-Jährige"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Anteil 65-Jährige und älter"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Fläche"
+        einheit: "km²"
+        status: auto
+
+  - name: "Einwohner / Einkommen"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil (VGR der Länder)"
+    kennzahlen:
+      - kennzahl: "Einkommen je Einwohner"
+        einheit: "€"
+        status: auto
+        hinweis: "Primäreinkommen der privaten Haushalte je Einwohner."
+
+  - name: "Wirtschaft und Gründen"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil (Umsatzsteuerstatistik, Gewerbeanzeigen)"
+    kennzahlen:
+      - kennzahl: "Umsatzsteuerpflichtige"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Steuerbarer Umsatz"
+        einheit: "Tsd. €"
+        status: auto
+      - kennzahl: "Gewerbeanmeldungen"
+        einheit: "Anzahl"
+        status: optional
+        hinweis: "Falls im Kommunalprofil verfügbar."
+      - kennzahl: "Gewerbeabmeldungen"
+        einheit: "Anzahl"
+        status: optional
+        hinweis: "Falls im Kommunalprofil verfügbar."
+
+  - name: "Pendler"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil / Landesdatenbank (Pendlerrechnung)"
+    kennzahlen:
+      - kennzahl: "Einpendler"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Auspendler"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Pendlersaldo"
+        einheit: "Anzahl"
+        status: optional
+        hinweis: "Einpendler minus Auspendler; wird abgeleitet, wenn beide vorliegen."
+
+  - name: "Wahlprofile"
+    phase: 1
+    connector: wahlprofile
+    primaerquelle: "statistik.nrw Wahlprofil (wp{RS}.pdf) / Landesdatenbank"
+    # Der Konnektor erzeugt Kennzahlen nach dem Muster
+    #   "Wahlbeteiligung <Wahlart>"        (%)
+    #   "Stimmenanteil <Partei> <Wahlart>" (%)
+    # jahr_stichtag = Jahr bzw. Stichtag der jeweils letzten Wahl.
+    wahlarten: [Bundestagswahl, Landtagswahl, Europawahl, Kommunalwahl]
+    parteien: [CDU, SPD, GRÜNE, FDP, AfD, DIE LINKE, Sonstige]
+    kennzahlen:
+      - kennzahl: "Wahlbeteiligung <Wahlart>"
+        einheit: "%"
+        status: auto
+      - kennzahl: "Stimmenanteil <Partei> <Wahlart>"
+        einheit: "%"
+        status: auto
+
+  - name: "Arbeitslosigkeit (BA)"
+    phase: 1
+    connector: arbeitsagentur
+    primaerquelle: "statistik.arbeitsagentur.de Einzelheft (Arbeitslose und Quoten, Gemeindeebene)"
+    kennzahlen:
+      - kennzahl: "Arbeitslose"
+        einheit: "Anzahl"
+        status: konfig
+        hinweis: "Einzelheft-Download-URL einmalig ermitteln und als ENV BA_EINZELHEFT_URL_TEMPLATE setzen (siehe README)."
+      - kennzahl: "Arbeitslosenquote"
+        einheit: "%"
+        status: konfig
+
+  - name: "SV-Beschäftigte nach Wirtschaftszweigen"
+    phase: 1
+    connector: arbeitsagentur
+    primaerquelle: "statistik.arbeitsagentur.de Interaktiv / CSV-Export (Beschäftigte nach WZ 2008)"
+    # Kennzahlen-Muster je WZ-Abschnitt A–U:
+    #   "SV-Beschäftigte WZ <Abschnitt>"        (Anzahl)
+    #   "Anteil SV-Beschäftigte WZ <Abschnitt>" (%)
+    wz_abschnitte:
+      A: "Land- und Forstwirtschaft, Fischerei"
+      B: "Bergbau und Gewinnung von Steinen und Erden"
+      C: "Verarbeitendes Gewerbe"
+      D: "Energieversorgung"
+      E: "Wasserversorgung; Abwasser- und Abfallentsorgung"
+      F: "Baugewerbe"
+      G: "Handel; Instandhaltung und Reparatur von Kraftfahrzeugen"
+      H: "Verkehr und Lagerei"
+      I: "Gastgewerbe"
+      J: "Information und Kommunikation"
+      K: "Erbringung von Finanz- und Versicherungsdienstleistungen"
+      L: "Grundstücks- und Wohnungswesen"
+      M: "Freiberufliche, wissenschaftliche und technische Dienstleistungen"
+      N: "Sonstige wirtschaftliche Dienstleistungen"
+      O: "Öffentliche Verwaltung, Verteidigung; Sozialversicherung"
+      P: "Erziehung und Unterricht"
+      Q: "Gesundheits- und Sozialwesen"
+      R: "Kunst, Unterhaltung und Erholung"
+      S: "Erbringung von sonstigen Dienstleistungen"
+      T: "Private Haushalte"
+      U: "Exterritoriale Organisationen und Körperschaften"
+    kennzahlen:
+      - kennzahl: "SV-Beschäftigte WZ <Abschnitt>"
+        einheit: "Anzahl"
+        status: konfig
+        hinweis: "CSV-Export-URL einmalig ermitteln und als ENV BA_WZ_CSV_URL_TEMPLATE setzen (siehe README)."
+      - kennzahl: "Anteil SV-Beschäftigte WZ <Abschnitt>"
+        einheit: "%"
+        status: konfig
+        hinweis: "Wird aus den Beständen abgeleitet (Abschnitt / Summe A–U)."
+
+  - name: "Branchenmix"
+    phase: 1
+    connector: arbeitsagentur
+    primaerquelle: "statistik.arbeitsagentur.de (CSV-Export)"
+    hinweis: >
+      Branchenmix (Wirtschaftszweig | SV-Beschäftigte | Anteil %) ist eine
+      Sicht auf den Cluster "SV-Beschäftigte nach Wirtschaftszweigen" und wird
+      NICHT doppelt in fact_kpi materialisiert. Auswertung per Filter auf
+      kpi_cluster = 'SV-Beschäftigte nach Wirtschaftszweigen'.
+    kennzahlen: []
+
+  - name: "Immobilien & Wohnen"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil + BORIS.NRW"
+    kennzahlen:
+      - kennzahl: "Wohnungsbestand"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Baufertigstellungen"
+        einheit: "Anzahl Wohnungen"
+        status: auto
+      - kennzahl: "Baugenehmigungen"
+        einheit: "Anzahl Wohnungen"
+        status: auto
+      - kennzahl: "Bodenrichtwert"
+        einheit: "€/m²"
+        status: manuell
+        hinweis: "BORIS.NRW bietet keinen einfachen stabilen Massendownload je Region; vorerst manuell/Phase 2."
+
+  - name: "Kaufkraft & Konsum"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "statistik.nrw Kommunalprofil (VGR, Lohn- und Einkommensteuerstatistik)"
+    kennzahlen:
+      - kennzahl: "Verfügbares Einkommen je Einwohner"
+        einheit: "€"
+        status: auto
+      - kennzahl: "Lohn- und Einkommensteuer"
+        einheit: "Tsd. €"
+        status: optional
+        hinweis: "Falls im Kommunalprofil ausgewiesen."
+      - kennzahl: "Kaufkraftindex"
+        einheit: "Index (D=100)"
+        status: manuell
+        hinweis: "Kommerzielle Quelle (z. B. GfK/NIQ), nicht amtlich verfügbar — n/v."
+
+  - name: "Tourismus"
+    phase: 1
+    connector: statistik_nrw
+    primaerquelle: "IT.NRW Beherbergungsstatistik / statistik.nrw Kommunalprofil"
+    kennzahlen:
+      - kennzahl: "Gästeankünfte"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Übernachtungen"
+        einheit: "Anzahl"
+        status: auto
+      - kennzahl: "Bettenkapazität"
+        einheit: "Anzahl"
+        status: optional
+
+  # ---------------------------------------------------------------------------
+  # PHASE 2 — Konnektor-Gerüste vorhanden, Beschaffung vorerst MANUELL
+  # (Portale ohne stabile API bzw. überwiegend qualitative Angaben)
+  # ---------------------------------------------------------------------------
+  - name: "Veranstaltungen"
+    phase: 2
+    connector: veranstaltungen
+    primaerquelle: "Kommunale Veranstaltungskalender + meinestadt.de"
+    kennzahlen:
+      - kennzahl: "Anzahl Events (rollierend 90 Tage)"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "Eventliste (Titel/Datum/Ort/Kategorie/URL)"
+        einheit: "qualitativ"
+        status: manuell
+        hinweis: "Qualitative Liste — passt nicht in fact_kpi (FLOAT64); bei Aktivierung eigene Tabelle vorsehen."
+
+  - name: "Vereine"
+    phase: 2
+    connector: vereine
+    primaerquelle: "Vereinsverzeichnisse + Registerportal + Kreissportbünde"
+    kategorien: [Sport, Kultur/Musik, Brauchtum/Karneval, Soziales/Ehrenamt, Jugend/Bildung, Umwelt/Natur, Sonstige]
+    kennzahlen:
+      - kennzahl: "Anzahl Vereine <Kategorie>"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "Top-25-Vereinsliste"
+        einheit: "qualitativ"
+        status: manuell
+
+  - name: "Mobilität & Erreichbarkeit"
+    phase: 2
+    connector: mobilitaet
+    primaerquelle: "Stadt-/Kreis-Seiten + VRS/VRR + Deutsche Bahn"
+    kennzahlen:
+      - kennzahl: "Anzahl Bahnhöfe/Knoten"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "Anzahl Autobahnanschlüsse"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "ÖPNV-Verbund"
+        einheit: "qualitativ"
+        status: manuell
+        hinweis: "VRS/VRR-Zugehörigkeit — qualitativ."
+
+  - name: "Einzelhandel/Innenstadt & Frequenz"
+    phase: 2
+    connector: einzelhandel
+    primaerquelle: "Kommunale Dokumente (Zentren-/Einzelhandelskonzepte)"
+    kennzahlen:
+      - kennzahl: "Einzelhandelskonzept vorhanden"
+        einheit: "ja/nein (1/0)"
+        status: manuell
+        hinweis: "Inkl. Jahr des Konzepts als jahr_stichtag."
+      - kennzahl: "Citymanagement vorhanden"
+        einheit: "ja/nein (1/0)"
+        status: manuell
+      - kennzahl: "Passantenfrequenz"
+        einheit: "Anzahl"
+        status: manuell
+        hinweis: "Nur falls kommunal veröffentlicht."
+      - kennzahl: "Leerstandsquote"
+        einheit: "%"
+        status: manuell
+        hinweis: "Nur falls kommunal veröffentlicht."
+
+  - name: "Bildung & Betreuung"
+    phase: 2
+    connector: bildung
+    primaerquelle: "IT.NRW / Destatis / MSB NRW / kinderbetreuung.nrw"
+    hinweis: "Teile evtl. später nach Phase 1 hebbar (IT.NRW-Schulstatistik ist strukturiert verfügbar)."
+    kennzahlen:
+      - kennzahl: "Kita-Plätze"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "Betreuungsquote"
+        einheit: "%"
+        status: manuell
+      - kennzahl: "Anzahl Schulen <Schulform>"
+        einheit: "Anzahl"
+        status: manuell
+      - kennzahl: "Bildungsbericht vorhanden"
+        einheit: "ja/nein (1/0)"
+        status: manuell
+        hinweis: "Inkl. Jahr als jahr_stichtag."
+
+  - name: "Risiken: Starkregen/Hochwasser"
+    phase: 2
+    connector: risiken
+    primaerquelle: "LANUV NRW / Bezirksregierung / Kommunen"
+    hinweis: "Keine Score-Erfindung — nur dokumentierte Fakten (Karten vorhanden ja/nein, Zuständigkeit)."
+    kennzahlen:
+      - kennzahl: "Starkregen-Gefahrenkarte vorhanden"
+        einheit: "ja/nein (1/0)"
+        status: manuell
+      - kennzahl: "Hochwasser-Gefahrenkarte vorhanden"
+        einheit: "ja/nein (1/0)"
+        status: manuell
+      - kennzahl: "Zuständige Stelle + Link"
+        einheit: "qualitativ"
+        status: manuell
