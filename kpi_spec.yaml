@@ -1,0 +1,199 @@
+meta:
+  beschreibung: Externe KPI-Spezifikation je Cluster fuer 7 Regionen (Koeln/Bonn-Raum).
+  zeitlogik_default: 'Pro Kennzahl: aktuellster verfuegbarer Wert (aggregation=aktuell) + Durchschnitt
+    der 3 neuesten verfuegbaren Jahre (aggregation=avg_3j), letzteres nur wenn >=3 Jahre vorliegen.'
+  update_intervall: quartalsweise (Datenquellen selbst meist jaehrlich/monatlich aktualisiert)
+regionen:
+- region: Leverkusen
+  rs: '05316'
+  typ: krfr. Stadt
+- region: Bonn
+  rs: '05314'
+  typ: krfr. Stadt
+- region: Rhein-Sieg-Kreis
+  rs: 05382
+  typ: Kreis
+- region: Rhein-Erft-Kreis
+  rs: '05362'
+  typ: Kreis
+- region: Rheinisch-Bergischer Kreis
+  rs: 05378
+  typ: Kreis
+- region: Oberbergischer Kreis
+  rs: '05374'
+  typ: Kreis
+- region: Kreis Euskirchen
+  rs: '05366'
+  typ: Kreis
+cluster:
+- id: demografie_flaeche
+  name: Demografie & Fläche
+  phase: 1
+  kennzahlen:
+  - Einwohner (amtlich)
+  - Altersstruktur (Anteile Altersgruppen)
+  - Anteil Nichtdeutsche (%)
+  - Anteil weiblich (%)
+  - Fläche (km²)
+  quelle_primaer: statistik.nrw Kommunalprofil / Landesdatenbank NRW (regionalschluessel={rs})
+  quelle_url: https://statistik.nrw/kommunalstatistiken
+  format: numerisch
+- id: einwohner_einkommen
+  name: Einwohner / Einkommen
+  phase: 1
+  kennzahlen:
+  - Einkommen je Einwohner
+  quelle_primaer: statistik.nrw Kommunalprofil
+  quelle_url: https://statistik.nrw/kommunalstatistiken
+  format: numerisch
+- id: wirtschaft_gruenden
+  name: Wirtschaft und Gründen
+  phase: 1
+  kennzahlen:
+  - 'Umsatzsteuer: Steuerpflichtige (Anzahl)'
+  - 'Umsatzsteuer: steuerbarer Umsatz'
+  - Gewerbean-/abmeldungen (falls verfuegbar)
+  quelle_primaer: statistik.nrw Kommunalprofil
+  quelle_url: https://statistik.nrw/kommunalstatistiken
+  format: numerisch
+- id: pendler
+  name: Pendler (Ein-/Auspendler)
+  phase: 1
+  kennzahlen:
+  - Einpendler (Anzahl)
+  - Auspendler (Anzahl)
+  - Pendlersaldo = Einpendler - Auspendler (optional)
+  quelle_primaer: statistik.nrw Kommunalprofil / Landesdatenbank
+  quelle_url: https://statistik.nrw/kommunalstatistiken
+  format: numerisch
+- id: wahlprofile
+  name: Wahlprofile
+  phase: 1
+  kennzahlen:
+  - Wahlbeteiligung (%) je Wahlart
+  - Parteien-Ergebnisse (%) je Wahlart (Kommunal/Landtag/Bundestag/Europa)
+  - 'letzte Wahl: Stichtag'
+  quelle_primaer: statistik.nrw Wahlprofil (wp{rs}.pdf) / Landesdatenbank
+  quelle_url: https://statistik.nrw/sites/default/files/electionprofiles/wp{rs}.pdf
+  format: numerisch
+- id: ba_arbeitslosigkeit
+  name: Arbeitslosigkeit (BA)
+  phase: 1
+  kennzahlen:
+  - Arbeitslose (Bestand)
+  - Arbeitslosenquote (%)
+  quelle_primaer: statistik.arbeitsagentur.de Einzelheft (gemeinde-arbeitslose-quoten)
+  quelle_url: https://statistik.arbeitsagentur.de/SiteGlobals/Forms/Suche/Einzelheftsuche_Formular.html?nn=27098&topic_f=gemeinde-arbeitslose-quoten
+  format: numerisch
+- id: sv_beschaeftigte
+  name: SV-Beschäftigte nach Wirtschaftszweigen
+  phase: 1
+  kennzahlen:
+  - SV-Beschaeftigte (Bestand) je Wirtschaftszweig WZ A-U
+  - Anteil (%) je Wirtschaftszweig
+  quelle_primaer: statistik.arbeitsagentur.de Interaktiv / Branchen im Fokus
+  quelle_url: https://statistik.arbeitsagentur.de/DE/Navigation/Statistiken/Interaktive-Statistiken/Branchen-im-Fokus/Branchen-im-Fokus-Nav.html
+  format: numerisch
+- id: branchenmix
+  name: Branchenmix
+  phase: 1
+  kennzahlen:
+  - Wirtschaftszweig | SV-Beschaeftigte | Anteil (%)
+  quelle_primaer: statistik.arbeitsagentur.de (CSV-Export WZ A-U)
+  quelle_url: https://statistik.arbeitsagentur.de/DE/Navigation/Statistiken/Interaktive-Statistiken/Branchen-im-Fokus/Branchen-im-Fokus-Nav.html
+  format: numerisch
+- id: immobilien_wohnen
+  name: Immobilien & Wohnen
+  phase: 1
+  kennzahlen:
+  - Wohnungsbestand (Wohnungen)
+  - Baufertigstellungen (Wohnungen)
+  - Baugenehmigungen (Wohnungen)
+  - Bodenrichtwerte (BORIS NRW)
+  quelle_primaer: statistik.nrw Kommunalprofil + BORIS.NRW
+  quelle_url: https://www.boris.nrw.de/
+  format: numerisch
+- id: kaufkraft_konsum
+  name: Kaufkraft & Konsum
+  phase: 1
+  kennzahlen:
+  - Verfuegbares Einkommen je Einwohner
+  - Einkommensteuer/Lohnsteuer (falls im Kommunalprofil)
+  - Kaufkraftindex/Zentralitaet (optional, sonst n/v)
+  quelle_primaer: statistik.nrw Kommunalprofil
+  quelle_url: https://statistik.nrw/kommunalstatistiken
+  format: numerisch
+- id: tourismus
+  name: Tourismus
+  phase: 1
+  kennzahlen:
+  - Gaesteankuenfte
+  - Uebernachtungen
+  - Bettenkapazitaet (optional)
+  quelle_primaer: IT.NRW Beherbergungsstatistik (regional)
+  quelle_url: https://www.it.nrw/statistik
+  format: numerisch
+- id: veranstaltungen
+  name: Veranstaltungen
+  phase: 2
+  kennzahlen:
+  - '#Events (rolling 90 Tage)'
+  - 'Liste: Titel | Datum | Ort | Kategorie | URL'
+  quelle_primaer: kommunale Veranstaltungskalender + meinestadt.de
+  quelle_url: https://www.leverkusen.de/stadt-erleben/veranstaltungskalender/
+  format: gemischt
+  hinweis: Kein einheitliches API je Kommune -> Stub mit TODO.
+- id: vereine
+  name: Vereine
+  phase: 2
+  kennzahlen:
+  - Top-25 Vereine je Region
+  - Counts je fixer Kategorie (Sport, Kultur/Musik, Brauchtum/Karneval, Soziales/Ehrenamt, Jugend/Bildung,
+    Umwelt/Natur, Sonstige)
+  quelle_primaer: kommunale Vereinsverzeichnisse + Registerportal + KSB
+  quelle_url: https://www.registerportal.de/
+  format: gemischt
+  hinweis: Heterogene Quellen -> Stub.
+- id: mobilitaet
+  name: Mobilität & Erreichbarkeit
+  phase: 2
+  kennzahlen:
+  - Bahnhoefe/ICE/RE/S-Bahn-Knoten
+  - OePNV-Verbund (VRS/VRR) + Hauptlinien
+  - Autobahnanschluesse
+  quelle_primaer: Stadt/Kreis-Seiten + VRS/VRR + Bahn
+  quelle_url: https://www.vrs.de/
+  format: qualitativ
+  hinweis: Ueberwiegend qualitativ -> Stub.
+- id: einzelhandel_frequenz
+  name: Einzelhandel/Innenstadt & Frequenz
+  phase: 2
+  kennzahlen:
+  - Zentren-/Einzelhandelskonzept vorhanden (Jahr)
+  - Citymanagement (ja/nein)
+  - Frequenzzaehlungen/Leerstand (falls vorhanden)
+  quelle_primaer: Stadt/Kreis-Dokumente (Zentrenkonzept)
+  quelle_url: ''
+  format: qualitativ
+  hinweis: Dokumenten-basiert -> Stub.
+- id: bildung_betreuung
+  name: Bildung & Betreuung
+  phase: 2
+  kennzahlen:
+  - Kita-Plaetze/Betreuungsquote
+  - Anzahl Schulen nach Schulform
+  - Bildungsbericht vorhanden (ja/nein, Jahr)
+  quelle_primaer: IT.NRW / Destatis / MK NRW / kinderbetreuung.nrw
+  quelle_url: https://www.it.nrw/statistik
+  format: gemischt
+  hinweis: Teilweise automatisierbar (IT.NRW) -> spaeter Phase 1 pruefen.
+- id: risiken_starkregen
+  name: 'Risiken: Starkregen/Hochwasser'
+  phase: 2
+  kennzahlen:
+  - Gefahren-/Hinweiskarten vorhanden (ja/nein)
+  - Zustaendige Stelle + Link
+  quelle_primaer: LANUV NRW / Bezirksregierung / Kommunen
+  quelle_url: https://www.lanuv.nrw.de/
+  format: qualitativ
+  hinweis: Kartenbasiert -> Stub, keine Score-Erfindung.
