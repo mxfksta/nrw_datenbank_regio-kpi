@@ -70,7 +70,7 @@ def test_dry_run_schreibt_csvs(tmp_path, monkeypatch):
 
     dim = _read_csv(tmp_path / "dim_region.csv")
     assert len(dim) == 7
-    assert {d["typ"] for d in dim} == {"Kreisfreie Stadt", "Kreis"}
+    assert {d["typ"] for d in dim} == {"krfr. Stadt", "Kreis"}
 
     runs = _read_csv(tmp_path / "pipeline_run.csv")
     assert len(runs) == 1

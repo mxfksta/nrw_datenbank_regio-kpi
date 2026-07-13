@@ -67,6 +67,21 @@ Duplikate.
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile je Wahlart | automatisch |
 | BA-Statistik (Einzelheft-XLSX, WZ-CSV) | Arbeitslose/-quote, SV-Beschäftigte nach WZ A–U | **URL-Templates einmalig ermitteln** → `BA_EINZELHEFT_URL_TEMPLATE`, `BA_WZ_CSV_URL_TEMPLATE` (die BA verlinkt nur über Suchformulare) |
 
+**Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
+dort beschreibende Einträge (z. B. „Altersstruktur (Anteile Altersgruppen)“).
+Die Pipeline schreibt in `fact_kpi` die **granularen Ausprägungen** dieser
+Einträge (z. B. „Anteil unter 18-Jährige“, „SV-Beschäftigte WZ C“). Um eine
+Kennzahl über die Landesdatenbank abzurufen, wird ihr Listeneintrag zu einem
+Objekt mit `ldb:`-Block erweitert:
+
+```yaml
+  kennzahlen:
+  - kennzahl: Einwohner (amtlich)
+    einheit: Anzahl
+    ldb:
+      tabelle: "12411-01i"   # Tabellencode in der Landesdatenbank — verifizieren!
+```
+
 **Defensives Parsing:** PDF-/XLSX-Layouts ändern sich. Alle Zuordnungen laufen
 über Label-Konstanten (`KOMMUNALPROFIL_LABELS`, `ZENSUS_LABELS`,
 `EINZELHEFT_LABELS`); weicht ein Layout grundlegend ab, wirft der Parser einen

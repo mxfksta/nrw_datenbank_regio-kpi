@@ -29,10 +29,12 @@ def test_cluster_konstanten_matchen_kpi_spec():
     assert konstanten == spec_namen
 
 
-def test_jeder_spec_cluster_hat_einen_konnektor():
-    registry_namen = {cls.name for cls in ALL_CONNECTORS}
-    spec_konnektoren = {c["connector"] for c in load_kpi_spec()["clusters"]}
-    assert spec_konnektoren <= registry_namen
+def test_jeder_spec_cluster_wird_von_einem_konnektor_bedient():
+    abgedeckt: set[str] = set()
+    for cls in ALL_CONNECTORS:
+        abgedeckt.update(cls.clusters)
+    spec_namen = {c["name"] for c in load_kpi_spec()["clusters"]}
+    assert spec_namen <= abgedeckt
 
 
 def test_build_connectors_phasen_filter():

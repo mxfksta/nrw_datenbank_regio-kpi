@@ -35,6 +35,10 @@ log = logging.getLogger(__name__)
 
 QUELLE_NAME = "statistik.nrw Wahlprofil"
 
+#: Defaults; kpi_spec.yaml kann sie je Cluster mit `wahlarten:`/`parteien:` überschreiben
+DEFAULT_WAHLARTEN = ["Bundestagswahl", "Landtagswahl", "Europawahl", "Kommunalwahl"]
+DEFAULT_PARTEIEN = ["CDU", "SPD", "GRÜNE", "FDP", "AfD", "DIE LINKE", "Sonstige"]
+
 #: Schreibweisen im PDF → kanonischer Parteiname laut kpi_spec.yaml
 PARTEI_ALIASE: dict[str, str] = {
     "CDU": "CDU",
@@ -77,8 +81,8 @@ class WahlprofileConnector(Connector):
         self, text: str, region: Region, url: str
     ) -> list[RawObservation]:
         spec = get_cluster_spec(CLUSTER_WAHLEN)
-        wahlarten: list[str] = spec["wahlarten"]
-        parteien: list[str] = spec["parteien"]
+        wahlarten: list[str] = spec.get("wahlarten") or DEFAULT_WAHLARTEN
+        parteien: list[str] = spec.get("parteien") or DEFAULT_PARTEIEN
 
         sections = self._split_sections(text, wahlarten)
         if not sections:

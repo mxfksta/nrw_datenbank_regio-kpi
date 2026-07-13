@@ -29,7 +29,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CLUSTER_DEMOGRAFIE = "Demografie & Fläche"
 CLUSTER_EINKOMMEN = "Einwohner / Einkommen"
 CLUSTER_WIRTSCHAFT = "Wirtschaft und Gründen"
-CLUSTER_PENDLER = "Pendler"
+CLUSTER_PENDLER = "Pendler (Ein-/Auspendler)"
 CLUSTER_WAHLEN = "Wahlprofile"
 CLUSTER_ARBEITSLOSIGKEIT = "Arbeitslosigkeit (BA)"
 CLUSTER_SV_WZ = "SV-Beschäftigte nach Wirtschaftszweigen"
@@ -92,12 +92,20 @@ def load_regions(path: Path | None = None) -> list[Region]:
 
 @lru_cache(maxsize=1)
 def load_kpi_spec(path: str | None = None) -> dict:
-    """Lädt kpi_spec.yaml (gecacht; Schlüssel siehe Kommentarkopf der Datei)."""
+    """Lädt kpi_spec.yaml (gecacht).
+
+    Akzeptiert die Cluster-Liste unter ``cluster:`` (Original-Spezifikation)
+    oder ``clusters:`` und normalisiert intern auf ``clusters``.
+    """
     yaml_path = Path(path or os.environ.get("KPI_SPEC_PATH", REPO_ROOT / "kpi_spec.yaml"))
     with yaml_path.open(encoding="utf-8") as f:
         spec = yaml.safe_load(f)
-    if not isinstance(spec, dict) or "clusters" not in spec:
-        raise ValueError(f"kpi_spec.yaml unerwartet: 'clusters' fehlt ({yaml_path})")
+    if not isinstance(spec, dict):
+        raise ValueError(f"kpi_spec.yaml unerwartet: kein Mapping ({yaml_path})")
+    clusters = spec.get("clusters") or spec.get("cluster")
+    if not clusters:
+        raise ValueError(f"kpi_spec.yaml unerwartet: 'cluster'/'clusters' fehlt ({yaml_path})")
+    spec["clusters"] = clusters
     return spec
 
 

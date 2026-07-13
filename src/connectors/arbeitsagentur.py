@@ -37,6 +37,7 @@ import openpyxl
 
 from src.config import (
     CLUSTER_ARBEITSLOSIGKEIT,
+    CLUSTER_BRANCHENMIX,
     CLUSTER_SV_WZ,
     Region,
     get_cluster_spec,
@@ -49,6 +50,32 @@ from src.transform import heute, parse_german_number
 log = logging.getLogger(__name__)
 
 QUELLE_NAME = "Statistik der Bundesagentur für Arbeit"
+
+#: WZ-2008-Abschnitte A–U; kpi_spec.yaml kann sie je Cluster mit
+#: `wz_abschnitte:` überschreiben
+WZ_ABSCHNITTE: dict[str, str] = {
+    "A": "Land- und Forstwirtschaft, Fischerei",
+    "B": "Bergbau und Gewinnung von Steinen und Erden",
+    "C": "Verarbeitendes Gewerbe",
+    "D": "Energieversorgung",
+    "E": "Wasserversorgung; Abwasser- und Abfallentsorgung",
+    "F": "Baugewerbe",
+    "G": "Handel; Instandhaltung und Reparatur von Kraftfahrzeugen",
+    "H": "Verkehr und Lagerei",
+    "I": "Gastgewerbe",
+    "J": "Information und Kommunikation",
+    "K": "Erbringung von Finanz- und Versicherungsdienstleistungen",
+    "L": "Grundstücks- und Wohnungswesen",
+    "M": "Freiberufliche, wissenschaftliche und technische Dienstleistungen",
+    "N": "Sonstige wirtschaftliche Dienstleistungen",
+    "O": "Öffentliche Verwaltung, Verteidigung; Sozialversicherung",
+    "P": "Erziehung und Unterricht",
+    "Q": "Gesundheits- und Sozialwesen",
+    "R": "Kunst, Unterhaltung und Erholung",
+    "S": "Erbringung von sonstigen Dienstleistungen",
+    "T": "Private Haushalte",
+    "U": "Exterritoriale Organisationen und Körperschaften",
+}
 
 #: Zeilen-Labels im Einzelheft-XLSX (bei Layout-Änderung hier anpassen)
 EINZELHEFT_LABELS: dict[str, str] = {
@@ -74,7 +101,13 @@ _MONAT_NR = {
 class ArbeitsagenturConnector(Connector):
     name: ClassVar[str] = "arbeitsagentur"
     phase: ClassVar[int] = 1
-    clusters: ClassVar[tuple[str, ...]] = (CLUSTER_ARBEITSLOSIGKEIT, CLUSTER_SV_WZ)
+    # Branchenmix ist eine Sicht auf CLUSTER_SV_WZ (siehe README) und wird
+    # hier nur der Vollständigkeit halber als bedient geführt.
+    clusters: ClassVar[tuple[str, ...]] = (
+        CLUSTER_ARBEITSLOSIGKEIT,
+        CLUSTER_SV_WZ,
+        CLUSTER_BRANCHENMIX,
+    )
 
     def fetch_raw(self, region: Region) -> list[RawObservation]:
         observations: list[RawObservation] = []
@@ -202,7 +235,9 @@ class ArbeitsagenturConnector(Connector):
         self, csv_text: str, region: Region, url: str
     ) -> list[RawObservation]:
         """Parst den WZ-CSV-Export: Bestand je Abschnitt A–U + berechnete Anteile."""
-        wz_abschnitte: dict[str, str] = get_cluster_spec(CLUSTER_SV_WZ)["wz_abschnitte"]
+        wz_abschnitte: dict[str, str] = (
+            get_cluster_spec(CLUSTER_SV_WZ).get("wz_abschnitte") or WZ_ABSCHNITTE
+        )
 
         delimiter = ";" if csv_text.count(";") >= csv_text.count(",") else ","
         reader = csv.reader(io.StringIO(csv_text), delimiter=delimiter)

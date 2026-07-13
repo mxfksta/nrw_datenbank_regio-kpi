@@ -235,8 +235,10 @@ class StatistikNrwConnector(Connector):
         """Bevorzugter Pfad: GENESIS-ffcsv je konfigurierter Kennzahl."""
         spec_entries: list[tuple[str, dict]] = []
         for cluster in load_kpi_spec()["clusters"]:
-            if cluster.get("connector") != self.name:
+            if cluster["name"] not in self.clusters:
                 continue
+            # Kennzahlen sind in der Spec einfache Strings (Doku) ODER Dicts —
+            # nur Dicts mit `ldb:`-Block sind maschinell abrufbar konfiguriert.
             for kennzahl in cluster.get("kennzahlen") or []:
                 if isinstance(kennzahl, dict) and "ldb" in kennzahl:
                     spec_entries.append((cluster["name"], kennzahl))
