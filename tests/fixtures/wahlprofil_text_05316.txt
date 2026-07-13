@@ -1,0 +1,44 @@
+Wahlprofil Leverkusen, krfr. Stadt
+Ergebnisse der jeweils letzten Wahlen
+
+Bundestagswahl am 23. Februar 2025
+Wahlberechtigte 118 335
+Wahlbeteiligung 79,3 %
+Zweitstimmenanteile
+CDU 28,1 %
+SPD 18,4 %
+GRÜNE 11,2 %
+FDP 4,9 %
+AfD 19,8 %
+DIE LINKE 8,9 %
+Sonstige 8,7 %
+
+Landtagswahl am 15. Mai 2022
+Wahlbeteiligung 54,1 %
+CDU 32,4 %
+SPD 28,6 %
+GRÜNE 16,2 %
+FDP 5,6 %
+AfD 6,8 %
+DIE LINKE 2,1 %
+Sonstige 8,3 %
+
+Europawahl am 9. Juni 2024
+Wahlbeteiligung 61,5 %
+CDU 27,5 %
+SPD 16,9 %
+GRÜNE 10,8 %
+FDP 4,8 %
+AfD 15,4 %
+DIE LINKE 2,4 %
+Sonstige 22,2 %
+
+Kommunalwahl am 14. September 2025
+Wahlbeteiligung 51,2 %
+CDU 29,8 %
+SPD 22,3 %
+GRÜNE 12,1 %
+FDP 3,9 %
+AfD 14,2 %
+DIE LINKE 5,4 %
+Sonstige 12,3 %

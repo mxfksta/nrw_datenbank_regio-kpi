@@ -1,0 +1,22 @@
+[
+  ["Kommunalprofil Leverkusen, krfr. Stadt"],
+  ["Bevölkerung", "2021", "2022", "2023"],
+  ["Bevölkerung am 31.12.", "163 851", "163 905", "164 202"],
+  ["Bevölkerung je km²", "2 078", "2 079", "2 083"],
+  ["Fläche am 31.12.2023 in km² 78,85"],
+  ["Merkmal", "2021", "2022", "2023"],
+  ["Primäreinkommen der privaten Haushalte je Einwohner", "24 892", "25 310", "26 001"],
+  ["Verfügbares Einkommen der privaten Haushalte je Einwohner", "21 034", "21 507", "22 118"],
+  ["Umsatzsteuerpflichtige", "4 512", "4 587", "4 611"],
+  ["Steuerbarer Umsatz", "12 345 678", "13 012 345", "13 456 789"],
+  ["Gewerbeanmeldungen", "1 021", "1 097", "1 133"],
+  ["Gewerbeabmeldungen", "987", "1 002", "1 041"],
+  ["Einpendler", "31 245", "32 011", "32 458"],
+  ["Auspendler", "28 902", "29 344", "29 871"],
+  ["Wohnungsbestand", "83 112", "83 356", "83 590"],
+  ["Baufertigstellungen", "312", "289", "301"],
+  ["Baugenehmigungen", "421", "356", "298"],
+  ["Gästeankünfte", "98 234", "104 556", "110 322"],
+  ["Übernachtungen", "201 334", "215 998", "224 105"],
+  ["Irrelevante Zeile ohne Label", "1", "2", "3"]
+]
