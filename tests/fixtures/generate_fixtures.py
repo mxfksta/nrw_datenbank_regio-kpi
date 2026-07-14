@@ -1,12 +1,17 @@
-"""Erzeugt die binären XLSX-Fixtures (synthetisch, an die Quell-Layouts angelehnt).
-
-Einmalig ausführen und die erzeugten Dateien einchecken:
+"""Erzeugt die SYNTHETISCHEN Fixtures (nur BA — dort liegt noch keine echte
+Beispieldatei vor, weil die Download-URLs erst konfiguriert werden müssen).
 
     python tests/fixtures/generate_fixtures.py
 
-Die Fixtures bilden die vom Parser ERWARTETEN Layouts ab (Label-Spalte +
-Wertspalten). Weichen die echten Quelldateien ab, müssen die Label-Konstanten
-in den Konnektoren UND diese Fixtures nachgezogen werden.
+Die übrigen Fixtures sind ECHTE Quelldaten (Leverkusen, 05316, Abruf 2026-07-14):
+
+- zensus_05316000_GRUNDINFO_BEVOELKERUNG.xlsx  — Original von statistik.nrw
+- kommunalprofil_text_05316.txt                — pdfplumber-Text aus l05316.pdf
+- wahlprofil_text_05316.txt                    — pdfplumber-Text aus wp05316.pdf
+
+Zum Aktualisieren der echten Fixtures: Dateien neu herunterladen und den Text
+mit pdfplumber extrahieren (zeilenweise, leere Zeilen entfernen) — siehe
+StatistikNrwConnector._lines_from_pdf.
 """
 
 from __future__ import annotations
@@ -16,35 +21,6 @@ from pathlib import Path
 from openpyxl import Workbook
 
 FIXTURES = Path(__file__).parent
-
-
-def zensus_grundinfo() -> None:
-    """Synthetisches Zensus-2022-Grundinfo-XLSX (Leverkusen, absolute Zahlen).
-
-    Altersgruppen summieren sich exakt auf 'Insgesamt' (163 905).
-    """
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Bevölkerung"
-    rows = [
-        ["Zensus 2022 — Grundinformationen Bevölkerung", None],
-        ["Leverkusen, kreisfreie Stadt (05316000)", None],
-        [None, None],
-        ["Merkmal", "Personen"],
-        ["Insgesamt", 163905],
-        ["weiblich", 83958],
-        ["Ausländer/-innen", 22120],
-        [None, None],
-        ["Alter (Gruppen)", None],
-        ["unter 18", 28684],
-        ["18 bis 29", 21308],
-        ["30 bis 49", 42615],
-        ["50 bis 64", 36059],
-        ["65 und älter", 35239],
-    ]
-    for row in rows:
-        ws.append(row)
-    wb.save(FIXTURES / "zensus_05316000_GRUNDINFO_BEVOELKERUNG.xlsx")
 
 
 def ba_einzelheft() -> None:
@@ -67,6 +43,5 @@ def ba_einzelheft() -> None:
 
 
 if __name__ == "__main__":
-    zensus_grundinfo()
     ba_einzelheft()
     print("Fixtures geschrieben nach", FIXTURES)

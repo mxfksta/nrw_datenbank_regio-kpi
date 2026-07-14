@@ -69,6 +69,8 @@ def parse_german_number(raw: str | int | float) -> float:
     # Amtliche Platzhalter für "kein Wert" / "geheim"
     if text in {"", "-", "–", "—", ".", "..", "...", "…", "x", "X", "/", "•"}:
         raise ValueError(f"Kein numerischer Wert: {raw!r}")
+    # IT.NRW nutzt Gedankenstrich/Minuszeichen als Vorzeichen ("–254")
+    text = text.replace("–", "-").replace("−", "-")
     # Einheiten/Sonderzeichen entfernen, Vorzeichen erhalten
     text = re.sub(r"[^\d,.\-+]", "", text)
     if not re.search(r"\d", text):

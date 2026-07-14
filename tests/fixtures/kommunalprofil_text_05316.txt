@@ -1,0 +1,825 @@
+InformationundTechnik
+Nordrhein-Westfalen
+Statistisches Landesamt
+Kommunalprofil Leverkusen, krfr. Stadt
+Regierungsbezirk Köln, Gemeindetyp: Kleine Großstadt
+Inhalt:
+Fläche
+Bevölkerun
+Bevölkerun svorausberechnun
+Bevölkerun sbewe un
+Bildun
+Schwerbehinderte Menschen
+Sozialversicherun pflichti Beschäfti e
+Verarbeitendes Gewerbe
+Investitionen
+Bauhaupt ewerbe
+Gewerbean- und -abmeldun en
+Umsatzsteue
+Einkommen
+Verkeh
+WeitereInformationenfindenSiein
+unsererLandesdatenbankunter
+www.landesdatenbank.nrw.de
+ZentraleInformationundBeratung
+Telefon: +492119449-2495/2525
+E-Mail: statistik-info@it.nrw.de
+www.it.nrw
+2/21
+Kommunalprofil Leverkusen, krfr. Stadt
+FürdieKlassifikationderKommunennachGemeindetypenwirdeineGemeindereferenzdesBundesamtes
+fürBauwesenundRaumordnungmitnachfolgenderDefinitionverwendet(Stand:2012):
+Gemeindetyp Definition
+GroßeGroßstadt Großstädteum 500000Einwohnerundmehr
+KleineGroßstadt Großstädteunter500000Einwohner
+GroßeMittelstadt MittelstädtemitZentrum,50000Einwohnerundmehr
+KleineMittelstadt MittelstädtemitZentrum,20000bis50000Einwohner
+GrößereKleinstadt KleinstädtemitZentrum,10000Einwohnerundmehr
+KleineKleinstadt KleinstädtemitZentrum,5000bis10000EinwohneroderGrundzentraleFunktion
+DemGemeindetyp„KleineGroßstadt“sindfolgendeKommunenzugeordnet:
+Aachen,krfr.Stadt
+BergischGladbach,Stadt
+Bielefeld,krfr.Stadt
+Bochum,krfr.Stadt
+Bonn,krfr.Stadt
+Bottrop,krfr.Stadt
+Gelsenkirchen,krfr.Stadt
+Hagen,krfr.Stadt
+Hamm,krfr.Stadt
+Herne,krfr.Stadt
+Krefeld,krfr.Stadt
+Leverkusen,krfr.Stadt
+Moers,Stadt
+Mönchengladbach,krfr.Stadt
+MülheimanderRuhr,krfr.Stadt
+Münster,krfr.Stadt
+Neuss,Stadt
+Oberhausen,krfr.Stadt
+Paderborn,Stadt
+Recklinghausen,Stadt
+Remscheid,krfr.Stadt
+Siegen,Stadt
+Solingen,krfr.Stadt
+Wuppertal,krfr.Stadt
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 3/21
+Flächeam31.12.2024nachNutzungsarten
+AlleGemeindendes
+Betrachtungsgebiet
+Nutzungsart Kreises Reg.-Bez. Landes gleichenTyps
+ha %
+Flächeinsgesamt 7887 100 x 100 100 100
+FlächefürSiedlungundVerkehr 4550 57,7 x 26,2 24,0 47,3
+Wohnbau-,Industrie-und
+Gewerbefläche 2502 31,7 x 11,0 10,3 23,2
+Abbauland1)undHalde 0 0 x 1,6 0,7 0,5
+Sport-,Freizeit-undErholungsgebiete,
+Friedhofsfläche 656 8,3 x 3,3 2,8 7,0
+FlächenandererNutzung2) 436 5,5 x 2,7 3,1 5,5
+Verkehrsfläche 957 12,1 x 7,7 7,1 11,1
+Vegetations-undGewässerfläche 3338 42,3 x 73,8 76,0 52,7
+Landwirtschaftsfläche 1772 22,5 x 42,6 46,6 28,6
+Waldfläche,Gehölz 1170 14,8 x 28,7 26,8 21,4
+Moor,Heide,Sumpf,Unland 50 0,6 x 0,7 0,9 0,9
+Gewässer 346 4,4 x 1,7 1,8 1,8
+1)umfasstfolgendeFlächen:Bergbaubetrieb,Tagebau,Grube,Steinbruch–2)umfasstfolgendeFlächen:Flächegemischter
+NutzungsowieFlächebesondererfunktionalerPrägung
+Flächeam31.12.2024nachNutzungsarten
+inProzent
+100%
+90%
+80%
+70%
+60%
+50%
+40%
+30%
+20%
+10%
+0%
+Leverkusen,krfr. entfälltbeiKreisen Regierungsbezirk Nordrhein-WestfalenTyp:KleineGroßstadt
+Stadt bzw.krfr.Städten Köln
+Wohnbau-,Industrie-und Landwirtschaftsfläche
+Gewerbefläche
+Waldfläche,Gehölz
+Verkehrsfläche
+SonstigeFlächen
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 4/21
+Bevölkerungs-sowieSiedlungs-undVerkehrsdichteam31.12.2024
+Betrachtungs- AlleGemeindendes
+Einwohnerjekm2
+gebiet Kreises Reg.-Bez. Landes gleichenTyps
+Bevölkerungsdichteinsgesamt 2137,5 x 609,2 528,7 1563,9
+Siedlungs-undVerkehrsdichte1) 3705,1 x 2323,4 2204,8 3306,0
+1)BevölkerungsdichtebezogenaufdiebesiedelteFläche(FlächefürSiedlungundVerkehr)
+Bevölkerungsstand*)31.12.1994–31.12.2024
+Bevölkerungsgruppe 1994 1999 2004 2009 2014 2019 2024
+Bevölkerunginsgesamt 161832 160841 161601 160593 161540 163729 168581
+Weiblich 83195 82725 83018 82885 83273 83953 85615
+Nichtdeutsche1) 19358 18802 17758 16896 20868 26649 31948
+*)BevölkerungsfortschreibungaufBasisVolkszählung1987,Zensus2011undZensus2022–1)DieGliederung
+„deutsch/nichtdeutsch“istdurchdieReformdesStaatsangehörigkeitsrechtsvon1999abdemBerichtsjahr2000beeinflusst.
+Bevölkerungsentwicklung1994–2024
+1994=100
+110
+105
+100
+95
+90
+85
+80
+75
+1994 1999 2004 2009 2014 2019 2024
+Leverkusen,krfr.Stadt Nordrhein-Westfalen Typ:KleineGroßstadt
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 5/21
+Bevölkerungsstand*)und-bewegung2018–2024
+Merkmal
+a=Insgesamt
+2018 2019 2020 2021 2022 2023 2024
+b=Nichtdeutsche1)
+c=je1000Einwohner
+Bevölkerungam31.12. a 163838 163729 163905 163851 167174 167850 168581
+b 26078 26649 27446 28410 29709 30954 31948
+Lebendgeborene a 1631 1597 1601 1601 1452 1467 1443
+b 279 260 271 278 223 226 235
+Gestorbene a 1846 1856 1813 1882 2023 2032 1928
+b 85 87 102 153 113 112 128
+ÜberschussderGeborenen(+) a –215 –259 –212 –281 –571 –565 –485
+bzw.Gestorbenen(–) b +194 +173 +169 +125 +110 +114 +107
+Zugezogene a 7947 8077 7131 7090 9399 8686 8899
+b 3524 3504 2873 2975 5450 4671 4807
+Fortgezogene a 7440 7887 6726 6844 6903 7469 7621
+b 2384 2626 1892 1781 2116 3001 3234
+ÜberschussderZu-(+) a +507 +190 +405 +246 +2496 +1217 +1278
+bzw.Fortgezogenen(–) b +1140 +878 +981 +1194 +3334 +1670 +1573
+Gesamtsaldo2) a +261 –109 +176 –54 +3323 +676 +731
+b +860 +571 +797 +964 +1299 +1245 +994
+c +1,6 1 +1 0,3 +19,9 +4,0 +4,3
+*)BevölkerungsfortschreibungaufBasisZensus2011und2022–1)DieGliederung„deutsch/nichtdeutsch“istdurchdie
+ReformdesStaatsangehörigkeitsrechtsvon1999abdemBerichtsjahr2000beeinflusst.–2)einschl.Bestandskorrekturen
+aufgrundnachträglichberichtigterMeldefälleundeinschließlichderFälleeinesWechselszurdeutschenStaatsangehörigkeit
+NatürlicheBevölkerungsbewegung Wanderungen
+2018–2024 2018–2024
+Leverkusen,krfr.Stadt Leverkusen,krfr.Stadt
+2500 10000
+9000
+2000 8000
+7000
+1500 6000
+5000
+1000 4000
+3000
+500 2000
+1000
+0 0
+2018 2020 2022 2024 2018 2020 2022 2024
+Geborene Gestorbene Zugezogene Fortgezogene
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 6/21
+DurchschnittlicheBevölkerungsbewegung je1000Einwohner2020–2024
+Merkmal AlleGemeindendes
+Betrachtungs-
+a=Insgesamt
+gebiet Kreises Reg.-Bez. Landes gleichenTyps
+b=Nichtdeutsche1)
+Lebendgeborene a 9,1 x 9,1 9,1 9,2
+b 1,5 x 1,1 1,4 .
+Gestorbene a 11,6 x 11,4 12,4 12,3
+b 0,7 x 0,7 0,6 .
+ÜberschussderGeborenen(+) a –2,5 x –2,4 –3,3 –3,2
+bzw.Gestorbenen(–) b +0,8 x +0,5 +0,8 .
+Zugezogene a 49,6 x 64,1 59,6 58,4
+b 25,0 x 27,8 28,7 30,3
+Fortgezogene a 42,8 x 58,4 53,4 52,5
+b 14,5 x 20,5 20,7 20,9
+ÜberschussderZu-(+) a +6,8 x +5,8 +6,2 +5,9
+bzw.Fortgezogenen(–) b +10,5 x +7,3 +8,0 +9,4
+Gesamtsaldo2) a +5,8 x +0,3 +1,0 +1,6
+b +6,4 x +3,3 +4,5 +5,5
+1)DieGliederung„deutsch/nichtdeutsch“istdurchdieReformdesStaatsangehörigkeitsrechtsvomJuli1999abdemBerichts-
+jahr2000beeinflusst.–2)einschließlichBestandskorrekturenaufgrundnachträglichberichtigterMeldefälleundeinschließlich
+derFälleeinesWechselszurdeutschenStaatsangehörigkeit
+Bevölkerungsstruktur*)am31.12.2024nachAltersgruppen
+AlleGemeindendes
+Altersgruppe Betrachtungsgebiet
+Kreises Reg.-Bez. Landes gleichenTyps
+Weiblich/Nichtdeutsch
+Anzahl %
+Bevölkerunginsgesamt 168581 100 x 100 100 100
+davonimAltervon...Jahren
+unter6 9177 5,4 x 5,4 5,5 5,4
+6bisunter18 19870 11,8 x 11,3 11,5 11,3
+18bisunter25 12037 7,1 x 7,6 7,4 8,3
+25bisunter30 10197 6,0 x 6,6 6,2 7,0
+30bisunter40 22194 13,2 x 13,5 13,2 13,5
+40bisunter50 21127 12,5 x 12,4 12,2 12,0
+50bisunter60 24610 14,6 x 14,3 14,4 13,8
+60bisunter65 12924 7,7 x 7,6 7,7 7,3
+65undmehr 36445 21,6 x 21,3 22,0 21,4
+18bisunter65 103089 61,2 x 62,0 61,0 61,9
+Weiblich 85615 50,8 x 50,8 50,8 50,9
+Nichtdeutsche1) 31948 19,0 x 15,7 15,8 18,6
+*)BevölkerungsfortschreibungaufBasisZensus2022– 1)DieGliederung„deutsch/nichtdeutsch“istdurchdieReformdes
+StaatsangehörigkeitsrechtsvomJuli1999abdemBerichtsjahr2000beeinflusst.
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 7/21
+Bevölkerungam31.12.2024nachAltersgruppen
+inProzent
+35%
+30%
+25%
+20%
+15%
+10%
+5%
+0%
+unter6 6–18 18–25 25–50 50–65 65undmehr
+Altervon...bisunter...Jahren
+Leverkusen,krfr.Stadt Nordrhein-Westfalen Typ:KleineGroßstadt
+Bevölkerung31.12.1988–31.12.2024nachAltersgruppen
+Leverkusen,krfr.Stadt
+30000
+25000
+20000
+15000
+10000
+5000
+0
+unter10 10–20 20–30 30–40 40–50 50–60 60–70 70und
+mehr
+Altervon...bisunter...Jahren
+31.12.1988 31.12.2006 31.12.2024
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 8/21
+Bevölkerungsvorausberechnung*)(Basisvariante)31.12.2024–31.12.2050nachAltersgruppenundGechlecht
+Leverkusen,krfr.Stadt Nordrhein-Westfalen
+Altersgruppe
+31.12.2024 31.12.2035 31.12.2050 31.12.2035 31.12.2050
+Geschlecht
+Anzahl 2024=100 Anzahl 2024=100 2024=100
+Bevölkerunginsgesamt 167930 167297 99,6 164553 98,0 99,9 97,3
+davonimAltervon...Jahren
+unter6 9306 8869 95,3 8802 94,6 93,9 92,0
+6bisunter18 19911 19849 99,7 18712 94,0 101,8 94,0
+18bisunter25 11859 12466 105,1 11825 99,7 102,0 98,4
+25bisunter30 10000 9267 92,7 9294 92,9 91,0 92,6
+30bisunter40 22001 21129 96,0 20787 94,5 95,1 92,0
+40bisunter50 21045 22704 107,9 20869 99,2 111,6 99,5
+50bisunter60 24597 21024 85,5 22320 90,7 84,7 91,2
+60bisunter65 12885 9690 75,2 10737 83,3 73,5 83,5
+65undmehr 36326 42299 116,4 41207 113,4 118,0 112,0
+18bisunter65 102387 96280 94,0 95832 93,6 93,6 93,1
+Männlich 82504 82239 99,7 80853 98,0 99,8 96,8
+Weiblich 85426 85058 99,6 83700 98,0 100,0 97,8
+*)FürdieBevölkerungsvorausberechnungindenkreisfreienStädtenundKreisenwerdenErgebnissederStatistikenderGeburten,
+SterbefälleundWanderungen,derFortschreibungdesBevölkerungsstandessowiederSterbetafelngenutzt.
+Bevölkerungsvorausberechnung*)(Basisvariante)
+31.12.2024–31.12.2050nachAltersgruppen
+Leverkusen,krfr.Stadt
+35000
+30000
+25000
+20000
+15000
+10000
+5000
+0
+unter10 10–20 20–30 30–40 40–50 50–60 60–70 70und
+mehr
+Altervon...bisunter...Jahren
+31.12.2024 31.12.2035 31.12.2043 31.12.2050
+*)FürdieBevölkerungsvorausberechnungindenkreisfreienStädtenundKreisenwerdenErgebnissederStatistikenderGeburten,
+SterbefälleundWanderungen,derFortschreibungdesBevölkerungsstandessowiederSterbetafelngenutzt.
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 9/21
+WanderungenüberdieGemeindegrenzenimDurchschnittderJahre2020–2024
+AlleGemeindendes
+Betrachtungsgebiet
+Zu-bzw.Fortgezogene Kreises Reg.-Bez. Landes gleichenTyps
+Anzahl %
+Zugezogeneinsgesamt 8241 100 x 100 100 100
+davonimAltervon...Jahren
+unter18 1348 16,4 x 14,7 16,1 15,3
+18bisunter25 1394 16,9 x 20,8 19,6 23,9
+25bisunter30 1473 17,9 x 17,7 16,9 17,7
+30bisunter50 2861 34,7 x 32,2 32,6 30,8
+50bisunter65 789 9,6 x 9,1 9,2 8,0
+65undmehr 376 4,6 x 5,5 5,5 4,3
+18bisunter65 6517 79,1 x 79,8 78,4 80,4
+Nichtdeutsche 4155 50,4 x 43,3 48,1 51,9
+Fortgezogeneinsgesamt 7113 100 x 100 100 100
+davonimAltervon...Jahren
+unter18 1004 14,1 x 13,6 14,3 14,0
+18bisunter25 1197 16,8 x 18,3 18,8 19,1
+25bisunter30 1172 16,5 x 17,8 17,2 19,2
+30bisunter50 2406 33,8 x 33,6 33,0 33,1
+50bisunter65 791 11,1 x 10,3 10,3 9,1
+65undmehr 543 7,6 x 6,4 6,5 5,6
+18bisunter65 5566 78,3 x 80,0 79,3 80,4
+Nichtdeutsche 2405 33,8 x 35,2 38,8 39,9
+unter18
+18–25
+25–30
+30–50
+50–65
+65und
+mehr
+–2 –1 0 +1 +2 +3 +4 +5
+Überschuss
+je1000Einwohner
+nerhaJ...retnusib...novretlA
+ÜberschussderZu-(+)bzw.Fortgezogenen(–)überdieGemeindegrenzen
+je1000EinwohnerimDurchschnittderJahre2020–2024nachAltersgruppen
+Leverkusen,krfr.Stadt Nordrhein-Westfalen Typ:KleineGroßstadt
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 10/21
+llgemeinbildendeSchulen*)am15.10.2024
+Ins- Grund- Haupt- Real- Gesamt- Gymna-
+Merkmal
+gesamt1) schule schule schule schule sium
+Schulen 40 24 2 3 2 5
+Schüler/-innen 19445 6925 710 2320 2930 5600
+Schulabgänge 1830 – 130 390 440 755
+Lehrkräfte2) 1985 675 95 175 315 535
+*)MitAusnahmederAnzahlderSchulenwerdenOriginalfallzahlenund-wertesummenausDatenschutzgründenabdemSchuljahr
+2019/20aufeinVielfachesvon5auf-bzw.abgerundetausgewiesen.HierdurchbestehtkeineAdditivität.NachdemSchulformkonzept:
+AlleBildungsgängewerdenunterderLeitschulformderSchuleberichtet,auchwennsievomBildungsgangderLeitschulformabweichen.
+–1)ggf.einschließlichVolksschule,FörderschuleGrund-/Hauptschule,FörderschuleRealschule/Gymnasium,PRIMUS-Schule,
+Sekundarschule,Gemeinschaftsschule,FreieWaldorfschuleundWeiterbildungskolleg–2)LehrkräftenachdemStammschulkonzept:
+AnmehrerenSchulentätigeLehrkräftewerdennuranderStammschulegezählt,auchwenndieseganzaneineranderenSchule
+tätigsind.EinschließlichSchulverwaltungsassistenz.
+SchwerbehinderteMenschenam31.12.2023
+SchwerbehinderteMenschen
+ArtderschwerstenBehinderung
+insgesamt männlich weiblich
+Insgesamt 17830 8685 9145
+VerlustoderTeilverlustvonGliedmaßen 80 45 35
+FunktionseinschränkungenvonGliedmaßen 1890 795 1095
+FunktionseinschränkungderWirbelsäuleunddesRumpfes,
+DeformierungdesBrustkorbes 1825 775 1050
+BlindheitundSehbehinderung 655 255 400
+Sprach-oderSprechstörungen,Taubheit,Schwerhörigkeit,
+Gleichgewichtsstörungen 575 300 275
+VerlusteinerBrustoderbeiderBrüste,Entstellungenu.a. 485 5 475
+BeeinträchtigungderFunktionvoninnerenOrganenbzw.Organsystemen 4035 2375 1660
+Querschnittslähmung,zerebraleStörungen,geistig-seelische
+Behinderungen,Suchtkrankheiten 4495 2275 2220
+SonstigeundungenügendbezeichneteBehinderungen 3800 1865 1935
+SchwerbehinderteMenschennachAltersgruppenam31.12.2023
+inProzentderBevölkerung
+45%
+40%
+35%
+30%
+25%
+20%
+15%
+10%
+5%
+0%
+unter25 25–45 45–60 60–65 65–70 70–75 75–80 80undmehr
+Altervon...bisunter...Jahren
+Leverkusen,krfr.Stadt RegierungsbezirkKöln Nordrhein-Westfalen
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 11/21
+SozialversicherungspflichtigBeschäftigteamArbeitsortam31.12.2024
+Beschäftigte DarunterAusländer/-innen
+Wirtschaftszweig(WZ2008)
+insgesamt männlich weiblich zusammen männlich weiblich
+Insgesamt(einschl.ohneAngabe) 67587 37611 29976 11391 7111 4280
+Land-undForstwirtschaft,Fischerei 37 23 14 10 . .
+ProduzierendesGewerbe 18432 14355 4077 2975 . .
+Handel,Gastgewerbe,VerkehrundLagerei 12673 7654 5019 3249 2226 1023
+SonstigeDienstleistungen 36445 15579 20866 5157 2386 2771
+SozialversicherungspflichtigBeschäftigteamArbeitsortam31.12.2024inProzent
+Betrachtungs- AlleGemeindendes
+Wirtschaftszweig(WZ2008)
+gebiet Kreises Reg.-Bez. Landes gleichenTyps
+Insgesamt(einschl.ohneAngabe) 100 x 100 100 100
+Land-undForstwirtschaft,Fischerei 0,1 x 0,3 0,4 0,1
+ProduzierendesGewerbe 27,3 x 19,4 24,7 19,5
+Handel,Gastgewerbe,VerkehrundLagerei 18,8 x 21,6 22,3 20,9
+SonstigeDienstleistungen 53,9 x 58,8 52,7 59,4
+SozialversicherungspflichtigBeschäftigteamArbeitsort
+am31.12.2024inProzent
+100
+90
+80
+70
+60
+50
+40
+30
+20
+10
+0
+Leverkusen,krfr. entfälltbeiKreisen Regierungsbezirk Nordrhein-Westfalen Typ:Kleine
+Stadt bzw.krfr.Städten Köln Großstadt
+Land-undForstwirtschaft,Fischerei Handel,Gastgewerbe,VerkehrundLagerei
+ProduzierendesGewerbe SonstigeDienstleistungen
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 12/21
+SozialversicherungspflichtigBeschäftigteam30.6.2024nachGeschlecht
+BeschäftigteamArbeitsort BeschäftigteamWohnort Pendler-
+Geschlecht
+insgesamt darunterEinpendler1) insgesamt darunterAuspendler1) saldo1)
+Insgesamt 66705 38276 66315 37901 +375
+Männlich 37128 23176 36489 22547 +629
+Weiblich 29577 15100 29826 15354 –254
+1)überdieGemeindegrenzen
+SozialversicherungspflichtigBeschäftigteamArbeitsortam31.12.2024nachBeschäftigungsumfangundAlter
+Insgesamt Männlich Weiblich
+Beschäftigungsumfang
+Ausländer/ Ausländer/ Ausländer/
+Altersgruppe insgesamt zusammen zusammen
+-innen -innen -innen
+Insgesamt 67587 11391 37611 7111 29976 4280
+unter25Jahre 6398 1121 3740 698 2658 423
+25bisunter45Jahre 29579 6221 16271 3957 13308 2264
+45Jahreundmehr 31610 4049 17600 2456 14010 1593
+Vollzeitbeschäftigte 47787 7863 32236 5802 15551 2061
+unter25Jahre 4948 816 3031 534 1917 282
+25bisunter45Jahre 20946 4336 13594 3171 7352 1165
+45Jahreundmehr 21893 2711 15611 2097 6282 614
+Teilzeitbeschäftigte 19800 3528 5375 1309 14425 2219
+unter25Jahre 1450 305 709 164 741 141
+25bisunter45Jahre 8633 1885 2677 786 5956 1099
+45Jahreundmehr 9717 1338 1989 359 7728 979
+SozialversicherungspflichtigTeilzeitbeschäftigteam31.12.2024
+nachBeschäftigtengruppeninProzent
+90%
+80%
+70%
+60%
+50%
+40%
+30%
+20%
+10%
+0%
+Männer Frauen Deutsche Ausländer/-innen
+Leverkusen,krfr.Stadt Nordrhein-Westfalen Typ:KleineGroßstadt
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 13/21
+Betriebe,BeschäftigteundUmsatzdesVerarbeitendenGewerbessowiedesBergbausundderGewinnung
+vonSteinenundErden*)2024nachWirtschaftszweigen**)
+Leverkusen,krfr.Stadt Nordrhein-Westfalen
+Wirtschaftszweig Betriebe Beschäf- Umsatz Betriebe Beschäf- Umsatz
+(30.9.) tigte(30.9.) (1000EUR) (30.9.) tigte(30.9.) (1000EUR)
+Insgesamt 49 18564 9567958 10219 1210520 384913234
+Herst.vonNahrungs-undFuttermitteln 2 . . 957 113596 45134366
+HerstellungvonPapier,Pappe
+undWarendaraus 1 . . 205 26564 8402277
+Herstellungvonchemischen
+Erzeugnissen 13 9614 3605930 448 103421 51539957
+HerstellungvonGummi-und
+Kunststoffwaren 4 399 92708 759 77352 16935873
+Herst.vonGlas,-waren,Keramik,
+Verarb.vonSteinenundErden 2 . . 554 32400 9281110
+Metallerzeugungund-bearbeitung – – – 429 98873 43784884
+Herst.vonMetallerzeugnissen 5 . . 2104 166701 34001702
+Herst.vonDatenverarbeitungsgeräten,
+elektron.u.optischenErzeugnissen 2 . . 330 44265 11777780
+Herst.vonelektrischenAusrüstungen – – – 485 87131 21102718
+Maschinenbau 7 531 115438 1480 200465 51878459
+HerstellungvonKraftwagenund-teilen 1 . . 222 64261 31873007
+HerstellungvonMöbeln – – – 288 29429 7260689
+ReparaturundInstallationvon
+MaschinenundAusrüstungen 6 1079 143562 568 39809 7906005
+*)BetriebevonUnternehmenmitimAllgemeinen20undmehrBeschäftigten–**)KlassifikationderWirtschaftszweige(WZ2008)
+BeschäftigteundUmsatzdesVerarbeitendenGewerbessowiedesBergbaus
+undderGewinnungvonSteinenundErden*)2010–2024
+2010=100
+180
+160
+140
+120
+100
+80
+60
+40
+20
+0
+2010 2012 2014 2016 2018 2020 2022 2024
+Beschäftigte;Leverkusen,krfr.Stadt Beschäftigte;Nordrhein-Westfalen
+Umsatz;Leverkusen,krfr.Stadt Umsatz;Nordrhein-Westfalen
+*)BetriebevonUnternehmenmitimAllgemeinen20undmehrBeschäftigten.–**)KlassifikationderWirtschaftszweige(WZ2008)
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 14/21
+Betriebe,BeschäftigteundUmsatzdesVerarbeitendenGewerbessowiedesBergbausundderGewinnung
+vonSteinenundErden*)2024nachWirtschaftszweigen**)inProzent
+Betrachtungs- AlleGemeindendes
+Wirtschaftszweig
+gebiet Kreises Reg.-Bez. Landes
+Betriebeinsgesamt 100 x 100 100
+HerstellungvonNahrungs-undFuttermitteln 4,1 x 9,8 9,4
+HerstellungvonPapier,PappeundWarendaraus 2,0 x 3,1 2,0
+HerstellungvonchemischenErzeugnissen 26,5 x 5,8 4,4
+HerstellungvonGummi-undKunststoffwaren 8,2 x 10,1 7,4
+HerstellungvonGlas,Glaswaren,Keramik,
+VerarbeitungvonSteinenundErden 4,1 x 5,6 5,4
+Metallerzeugungund-bearbeitung – x 2,3 4,2
+HerstellungvonMetallerzeugnissen 10,2 x 13,6 20,6
+HerstellungvonDatenverarbeitungsgeräten,
+elektronischenundoptischenErzeugnissen 4,1 x 4,8 3,2
+HerstellungvonelektrischenAusrüstungen – x 5,5 4,7
+Maschinenbau 14,3 x 15,0 14,5
+HerstellungvonKraftwagenundKraftwagenteilen 2,0 x 2,4 2,2
+HerstellungvonMöbeln – x 1,1 2,8
+ReparaturundInstallationvonMaschinenu.Ausrüstungen 12,2 x 6,0 5,6
+Beschäftigteinsgesamt 100 x 100 100
+HerstellungvonNahrungs-undFuttermitteln . x 9,8 9,4
+HerstellungvonPapier,PappeundWarendaraus . x 3,7 2,2
+HerstellungvonchemischenErzeugnissen 51,8 x 12,6 8,5
+HerstellungvonGummi-undKunststoffwaren 2,1 x 8,1 6,4
+HerstellungvonGlas,Glaswaren,Keramik,
+VerarbeitungvonSteinenundErden . x 3,1 2,7
+Metallerzeugungund-bearbeitung – x 4,0 8,2
+HerstellungvonMetallerzeugnissen . x 7,5 13,8
+HerstellungvonDatenverarbeitungsgeräten,
+elektronischenundoptischenErzeugnissen . x 3,7 3,7
+HerstellungvonelektrischenAusrüstungen – x 5,2 7,2
+Maschinenbau 2,9 x 15,1 16,6
+HerstellungvonKraftwagenundKraftwagenteilen . x 9,0 5,3
+HerstellungvonMöbeln – x 0,5 2,4
+ReparaturundInstallationvonMaschinenu.Ausrüstungen 5,8 x 4,1 3,3
+Umsatzinsgesamt 100 x 100 100
+HerstellungvonNahrungs-undFuttermitteln . x 9,5 11,7
+Herst.vonPapier,PappeundWarendaraus . x 3,2 2,2
+HerstellungvonchemischenErzeugnissen 37,7 x 15,8 13,4
+HerstellungvonGummi-undKunststoffwaren 1,0 x 4,9 4,4
+HerstellungvonGlas,Glaswaren,Keramik,
+VerarbeitungvonSteinenundErden . x 2,1 2,4
+Metallerzeugungund-bearbeitung – x 4,1 11,4
+HerstellungvonMetallerzeugnissen . x 3,7 8,8
+HerstellungvonDatenverarbeitungsgeräten,
+elektronischenu.optischenErzeugnissen . x 1,9 3,1
+HerstellungvonelektrischenAusrüstungen – x 3,3 5,5
+Maschinenbau 1,2 x 10,7 13,5
+HerstellungvonKraftwagenund-teilen . x 18,8 8,3
+HerstellungvonMöbeln – x 0,2 1,9
+ReparaturundInstallationvonMaschinenu.Ausrüstungen 1,5 x 1,8 2,1
+*)BetriebevonUnternehmenmitimAllgemeinen20undmehrBeschäftigten–**)KlassifikationderWirtschaftszweige(WZ2008)
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 15/21
+BeschäftigteundUmsatzdesVerarbeitendenGewerbessowiedesBergbaus
+undderGewinnungvonSteinenundErden*)2024nachWirtschaftszweigen**)
+HerstellungvonNahrungs-
+undFuttermitteln
+Herst.vonPapier,Pappe
+undWarendaraus
+Herstellungvonchemischen
+Erzeugnissen
+HerstellungvonGummi-
+undKunststoffwaren
+HerstellungvonGlas,
+-waren,Keramik,Verarb.
+vonSteinenundErden
+Metallerzeugungund
+-bearbeitung
+Herstellungvon
+Metallerzeugnissen
+HerstellungvonDV-geräten,
+elektronischenund
+optischenErzeugnissen
+Herstellungvonelektrischen
+Ausrüstungen
+Maschinenbau
+HerstellungvonKraftwagen
+und-teilen
+HerstellungvonMöbeln
+ReparaturundInstallation
+vonMaschinenund
+Ausrüstungen
+0% 10% 20% 30% 40% 50% 60%
+Beschäftigte;Leverkusen,krfr.Stadt Beschäftigte;Nordrhein-Westfalen Umsatz;Leverkusen,krfr.Stadt Umsatz;Nordrhein-Westfalen
+*)BetriebevonUnternehmenmitimAllgemeinen20undmehrBeschäftigten –**)KlassifikationderWirtschaftszweige(WZ2008)
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 16/21
+Betriebe,Beschäftigte,UmsatzundInvestitionenderBetriebedesVerarbeitendenGewerbessowiedes
+BergbausundderGewinnungvonSteinenundErden*)2024
+Betrachtungs- AlleGemeindendes
+Merkmal
+gebiet Kreises Reg.-Bez. Landes
+Betriebe(am31.12.) 48 x 1798 9826
+mitInvestitionen 40 x 1492 8115
+Beschäftigte(am30.9.) 18561 x 229743 1199579
+inBetriebenmitInvestitionen 18233 x 213935 1111613
+Umsatz1) 1000EUR 9139242 x 91487976 381935680
+derBetriebemitInvestitionen 9076321 x 84706043 358161068
+Bruttoanlageinvestitioneninsgesamt(1000EUR) 168415 x 3256380 12740891
+MaschinenundmaschinelleAnlagen,Betriebs-
+undGeschäftsausstattungen 158093 x 2881744 11365969
+jeBeschäftigteninEUR 9074 x 14174 10621
+inProzentamUmsatz 1,8 x 3,6 3,3
+*)BetriebevonUnternehmenmitimAllgemeinen20undmehrBeschäftigten–1)ohneUmsatzsteuer
+Betriebe,BeschäftigteundUmsatzimBauhauptgewerbe2009–2024
+2009 2014 2019 2024
+Merkmal
+Anzahl 2009=100 Anzahl 2009=100 Anzahl 2009=100
+Betriebeam30.Juni 77 80 103,9 105 136,4 115 149,4
+Beschäftigteam30.Juni 869 1049 120,7 1379 158,7 1272 146,4
+Umsatz1)imVorahr 1000EUR 79099 90589 114,5 128752 162,8 195934 247,7
+1)ohneUmsatzsteuer
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 17/21
+Gewerbean-und-abmeldungen*)2024nachGrundderAn-bzw.AbmeldungsowienachWirtschaftszweigen**)
+An-bzw.Abmeldegrund Betrachtungs- AlleGemeindendes
+Wirtschaftszweig gebiet Kreises Reg.-Bez. Landes
+nmeldungeninsgesamt 2611 x 43183 157858
+GrundderAnmeldung
+Neugründung 2251 x 36405 134614
+Umwandlung 6 x 135 656
+Zuzug 271 x 4037 13570
+SonstigeAnmeldung 83 x 2606 9018
+Wirtschaftszweige
+Land-undForstwirtschaft,Fischerei 3 x 163 742
+VerarbeitendesGewerbe,Energie-,Wasserversorgung,
+Entsorgungu.Beseitigungv.Umweltverschmutzungen 63 x 1984 8383
+Baugewerbe 541 x 3533 12339
+Handel,InstandhaltungundReparaturvonKfz 356 x 9808 41016
+VerkehrundLagerei 73 x 1595 6055
+Gastgewerbe 77 x 2575 10259
+InformationundKommunikation 77 x 2234 7071
+Finanz-undVersicherungsdienstleistung,
+Grundstücks-undWohnungswesen 190 x 2600 10215
+Freiberufliche,wissenschaftlicheund
+technischeDienstleistung 192 x 4809 16831
+SonstigewirtschaftlicheDienstleistung 336 x 5597 19634
+Erziehung,Unterricht,Gesundheits-undSozialwesen,
+Kunst,Unterhaltung,Erholung,sonst.Dienstleistungen 703 x 8282 25301
+übrigeWirtschaftsabschnitte – x 3 12
+bmeldungeninsgesamt 2425 x 35951 137061
+GrundderAbmeldung
+vollständigeAufgabe 2268 x 29718 114320
+Umwandlung 6 x 187 947
+Fortzug 92 x 3745 13422
+SonstigeAbmeldung 59 x 2301 8372
+Wirtschaftszweige
+Land-undForstwirtschaft,Fischerei 2 x 147 621
+VerarbeitendesGewerbe,Energie-,Wasserversorgung,
+Entsorgungu.Beseitigungv.Umweltverschmutzungen 37 x 1570 6886
+Baugewerbe 849 x 3936 13487
+Handel,InstandhaltungundReparaturvonKfz 314 x 9077 39098
+VerkehrundLagerei 58 x 1404 5752
+Gastgewerbe 86 x 2402 9803
+InformationundKommunikation 41 x 1528 5122
+Finanz-undVersicherungsdienstleistung,
+Grundstücks-undWohnungswesen 85 x 1967 7877
+Freiberufliche,wissenschaftlicheund
+technischeDienstleistung 89 x 3317 12333
+SonstigewirtschaftlicheDienstleistung 151 x 4106 15199
+Erziehung,Unterricht,Gesundheits-undSozialwesen,
+Kunst,Unterhaltung,Erholung,sonst.Dienstleistungen 713 x 6491 20863
+übrigeWirtschaftsabschnitte – x 6 20
+*)ohneAutomatenaufsteller–**)KlassifikationderWirtschaftszweige,Ausgabe2008(WZ2008)
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 18/21
+ÜberschussderGewerbeanmeldungen(+)bzw.derGewerbeabmeldungen(–)
+derJahre2020–2024nachWirtschaftszweigen*)
+Land-undForstwirtschaft,
+Fischerei
+VerarbeitendesGewerbe,
+Energie-,Wasserversorgung,
+EntsorgungundBeseitigung
+vonUmweltverschmutzungen
+Baugewerbe
+Handel;Instandhaltungund
+ReparaturvonKfz
+VerkehrundLagerei
+Gastgewerbe
+Informationund
+Kommunikation
+Finanz-undVersicherungs-
+dienstleistung,Grundstücks-
+undWohnungswesen
+Freiberufliche,wissen-
+schaftlicheund
+technischeDienstleistung
+Sonstigewirt-
+schaftlicheDienstleistung
+Erziehung,Unterricht,
+Gesundheits-undSozialwesen,
+Kunst,Unterhaltung,Erholung,
+sonstigeDienstleistungen
+–5% +0% +5% +10% +15% +20% +25% +30%
+Leverkusen,krfr.Stadt RegierungsbezirkKöln Nordrhein-Westfalen
+*)KlassifikationderWirtschaftszweige,Ausgabe2008(WZ2008)
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 19/21
+Steuerpflichtige,steuerbarerUmsatz*)undUmsatzsteuer2014–2023
+Merkmal 2014 2017 2020 2023
+Steuerpflichtige 4773 4660 4470 5161
+SteuerbarerUmsatz(1000EUR) 28582176 36761725 31901886 40645095
+SteuerbarerUmsatz:Lieferungen
+undLeistungen(1000EUR) 24437027 32751608 28434190 35522913
+UmsatzsteuervorAbzugderVorsteuer(1000EUR) 3512822 3717224 3428502 4878079
+UmsatzsteuervorAbzugderVorsteuer:
+LieferungenundLeistungen(1000EUR) 2729056 2231743 2152401 2818372
+AbziehbareVorsteuer(1000EUR) 3522111 3733521 3550090 4958298
+Umsatzsteuervorauszahlung(1000EUR) -6865 -16296 -121585 -80218
+*)NurSteuerpflichtigemitLieferungenundLeistungenvonmehrals22000EUR(bis2019:vonmehrals17500EUR),ohne
+Umsatzsteuer.
+PrimäreinkommenundverfügbaresEinkommenderprivatenHaushalte2022
+Betrachtungs- AlleGemeindendes
+Einkommen
+gebiet Kreises Reg.-Bez. Landes gleichenTyps
+Primäreinkommen
+Insgesamt(Mill.EUR) 5038 x 144909 549159 139907
+EURjeEinwohner 30567 x 32200 30455 28466
+erfügbaresEinkommenderprivatenHaushalte
+Insgesamt(Mill.EUR) 4034 x 114933 452602 116137
+EURjeEinwohner 24477 x 25539 25100 23630
+RangzifferderGemeindeinNRW (1bis396) 304 x x x x
+VerfügbaresEinkommenderprivatenHaushalteinEURjeEinwohner2017–2022
+30000EUR
+25000EUR
+20000EUR
+15000EUR
+10000EUR
+5000EUR
+0EUR
+2017 2018 2019 2020 2021 2022
+Leverkusen,krfr.Stadt entfälltbeiKreisenbzw.krfr.Städten Nordrhein-Westfalen
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 20/21
+UnfälleundKfz-Bestandvon2009bis2024
+2009 2014 2019 2024
+Merkmal
+Anzahl 2009=100 Anzahl 2009=100 Anzahl 2009=100
+PolizeilicherfassteUnfälle 803 770 95,9 742 92,4 728 90,7
+UnfällemitPersonenschaden 589 655 111,2 589 100,0 556 94,4
+Ortslage
+innerorts 499 550 110,2 499 100,0 431 86,4
+außerorts(ohneAutobahnen) 5 13 260,0 14 280,0 18 360,0
+aufAutobahnen 85 92 108,2 76 89,4 107 125,9
+Straßenklasse
+Autobahnen 85 92 108,2 76 89,4 107 125,9
+Bundesstraßen 53 20 37,7 32 60,4 27 50,9
+Landesstraßen 97 39 40,2 167 172,2 131 135,1
+Kreisstraßen 7 3 42,9 23 328,6 18 257,1
+andereStraßen 347 501 144,4 291 83,9 273 78,7
+SchwerwiegendeUnfällemitSach-
+schadenimengerenSinne 184 84 45,7 111 60,3 . .
+UnfälleunterdemEinfluss
+berauschenderMittel 30 31 103,3 42 140,0 . .
+erun lücktePersonen 734 857 1168 767 1045 725 988
+VerletztePersonen 729 854 117,1 763 104,7 720 98,8
+SchwerverletztePersonen 87 101 116,1 143 164,4 68 78,2
+GetötetePersonen 5 3 60,0 4 80,0 5 100,0
+Kfz-Bestandje1000Einwohner 563 595 105,6 640 113,6 648 115,1
+Pkw-Bestandje1000Einwohner 492 519 105,6 557 113,3 556 113,0
+*)WertezumKfz-Bestandzum01.01.2010,01.01.2015,01.01.2020und01.01.2025.WertezumBevölkerungsstand
+zum31.12.2009,31.12.2014,31.12.2019und31.12.2024.
+VerunglücktePersonen2005-2024
+2005=100
+140
+120
+100
+80
+60
+40
+20
+2005 2007 2009 2011 2013 2015 2017 2019 2021 2023
+Leverkusen,krfr.Stadt Nordrhein-Westfalen Typ:KleineGroßstadt
+IT.NRW,Landesdatenbank,Stand:15.01.2026
+Kommunalprofil Leverkusen, krfr. Stadt 21/21
+Zeichenerklärung(nachDIN55301)
+0 =wenigeralsdieHälftevon1inderletztenbesetztenStelle,jedochmehralsnichts
+– =nichtsvorhanden(genaunull)
+. =Zahlenwertunbekanntodergeheimzuhalten
+/ =keineAngabe,daZahlenwertnichtsichergenug
+x =Tabellenfachgesperrt,weilAussagenichtsinnvoll
+HinweiszumBevölkerungsstandfürdenStichtag31.12.2016
+DieEntwicklungdesBevölkerungsstandes2016istaufgrundmethodischerÄnderungenbeidenWanderungs-
+statistiken,technischerWeiterentwicklungenderDatenlieferungenausdemMeldewesensowieder
+UmstellungaufeinneuesstatistischesAufbereitungsverfahrennurbedingtmitdenVorjahreswerten
+vergleichbar.EinschränkungenbeiderGenauigkeitderErgebnissekönnenausdererhöhtenZuwanderung
+unddendadurchbedingtenProblemenbeidermelderechtlichenErfassungSchutzsuchenderresultieren.
+FürsechsKommunenistdasvorliegendeErgebnis,dasu.a.aufBasisdervondenMeldebehörden
+erhaltenenNachrichtenermitteltwurde,unplausibel.DaheristdieGenauigkeitderErgebnisseder
+übergeordnetenVerwaltungsbezirkeeingeschränkt.DieGründehierfürliegenoffenbarindermelderecht-
+lichenBehandlungvonSchutzsuchenden.DieUnstimmigkeitenkonntennichtabschließendaufgelöstwerden.
+HinweiszudensozialversicherungspflichtigBeschäftigten
+FehlendeoderfalscheSignierungenderMeldungenzurSozialversicherungwerdenabdemBerichtjahr1998
+vomneuenAuswertungsverfahrennichtmehrautomatischkorrigiert.DieshatdieKonsequenz,dassz.B.die
+SummierungausVollzeitundTeilzeitoderausDeutschenundAusländernnichtimmerdie"Beschäftigten
+insgesamt"ergibt,sonderngeringfügigkleinerseinkann.
+HinweiszudenDiagrammen
+GeheimzuhaltendeWerte(".")undZahlenwerte,dienichtsichergenugsind("/"),werdeninDiagrammen
+wie"-"(nichtsvorhanden,genaunull)nichtausgewiesen.
+Impressum
+InformationundTechnikNordrhein-Westfalen(IT.NRW)
+StatistischesLandesamt
+Mauerstr.51
+40476Düsseldorf
+Telefon: +49(0)2119449-01
+Fax: +49(0)2119449-8000
+E-Mail: poststelle@it.nrw.de
+Internet: www.it.nrw
+Quellen
+InformationundTechnikNordrhein-Westfalen(IT.NRW),StatistischesLandesamt
+BundesagenturfürArbeit(SozialversicherungspflichtigBeschäftigte)
+IT.NRW,Landesdatenbank,Stand:15.01.2026

@@ -1,44 +1,194 @@
-Wahlprofil Leverkusen, krfr. Stadt
-Ergebnisse der jeweils letzten Wahlen
-
-Bundestagswahl am 23. Februar 2025
-Wahlberechtigte 118 335
-Wahlbeteiligung 79,3 %
-Zweitstimmenanteile
-CDU 28,1 %
-SPD 18,4 %
-GRÜNE 11,2 %
-FDP 4,9 %
-AfD 19,8 %
-DIE LINKE 8,9 %
-Sonstige 8,7 %
-
-Landtagswahl am 15. Mai 2022
-Wahlbeteiligung 54,1 %
-CDU 32,4 %
-SPD 28,6 %
-GRÜNE 16,2 %
-FDP 5,6 %
-AfD 6,8 %
-DIE LINKE 2,1 %
-Sonstige 8,3 %
-
-Europawahl am 9. Juni 2024
-Wahlbeteiligung 61,5 %
-CDU 27,5 %
-SPD 16,9 %
-GRÜNE 10,8 %
-FDP 4,8 %
-AfD 15,4 %
-DIE LINKE 2,4 %
-Sonstige 22,2 %
-
-Kommunalwahl am 14. September 2025
-Wahlbeteiligung 51,2 %
-CDU 29,8 %
-SPD 22,3 %
-GRÜNE 12,1 %
-FDP 3,9 %
-AfD 14,2 %
-DIE LINKE 5,4 %
-Sonstige 12,3 %
+Wahlergebnisse seit 1994
+für Leverkusen, krfr. Stadt
+Kommunalwahlen(WahlenzudenRätenderkreisfreienStädte)1994bis2025
+StimmenanteileinProzent
+Stichtag Wahlbeteiligungin CDU SPD GRÜNE FDP AfD DieLinke¹ Sonstige
+Prozent
+16.10.1994 81,0 37,1 37,4 10,0 3,9 x – 11,5
+12.09.1999 50,8 46,3 30,0 6,7 3,6 x – 13,4
+26.09.2004 49,1 36,8 26,7 9,4 5,5 x – 21,6
+30.08.2009 48,0 32,7 24,6 10,1 7,6 x 3,3 21,7
+25.05.2014 46,2 32,5 28,2 9,3 3,8 – 3,8 22,3
+13.09.2020 48,5 27,8 25,2 18,2 4,8 5,7 3,4 14,9
+14.09.2025 54,0 31,0 21,5 10,9 3,3 15,4 5,1 12,8
+WeitereDatenzudenKommunalwahleninderLandesdatenbankunter:Kommunalwahlen-Kreistags-undGemeinderatswahlen
+Landtagswahlen1995bis2022
+StimmenanteileinProzent²
+Stichtag Wahlbeteiligungin CDU SPD GRÜNE FDP AfD DieLinke¹ Sonstige
+Prozent
+14.05.1995 62,9 36,7 46,2 10,2 4,8 x x 2,1
+14.05.2000 54,6 35,9 44,8 6,5 9,4 x 1,0 2,5
+22.05.2005 60,5 43,3 38,8 6,2 6,6 x 1,0 4,2
+09.05.2010 58,1 32,3 34,8 12,1 6,7 x 5,3 8,7
+13.05.2012 57,8 24,2 39,1 11,7 9,0 x 2,5 13,5
+14.05.2017 63,7 31,5 31,0 6,1 12,8 8,3 4,7 5,6
+15.05.2022 51,8 33,7 27,6 18,4 6,2 5,8 1,7 6,6
+WeitereDatenzudenLandtagswahleninderLandesdatenbankunter:AllgemeineLandtagswahlstatistik
+Bundestagswahlen1994bis2025
+StimmenanteileinProzent
+Stichtag Wahlbeteiligungin CDU SPD GRÜNE FDP AfD DieLinke¹ Sonstige
+Prozent
+16.10.1994 81,2 37,3 42,4 7,7 8,1 x 0,9 3,5
+27.09.1998 83,4 33,3 47,6 6,7 7,4 x 1,2 3,8
+22.09.2002 79,7 33,2 44,7 8,9 9,8 x 1,1 2,3
+18.09.2005 78,2 32,5 41,3 7,9 10,6 x 4,7 3,0
+27.09.2009 71,1 32,6 27,4 10,4 15,4 x 8,4 5,8
+22.09.2013 72,0 39,5 32,1 7,7 5,2 3,8 5,9 5,8
+24.09.2017 75,2 30,8 27,3 6,9 13,0 10,3 7,4 4,2
+26.09.2021 74,8 24,3 29,8 15,9 11,5 7,9 3,4 7,1
+23.02.2025 81,2 28,0 21,4 11,8 4,3 17,2 8,5 8,8
+WeitereDatenzudenBundestagswahleninderLandesdatenbankunter:AllgemeineBundestagswahlstatistik
+Europawahlen1994bis2024
+StimmenanteileinProzent
+Stichtag Wahlbeteiligungin CDU SPD GRÜNE FDP AfD DieLinke¹ Sonstige
+Prozent
+12.06.1994 60,5 35,0 39,6 12,1 5,3 x 0,7 7,4
+13.06.1999 43,8 46,3 37,3 7,2 4,3 x 1,2 3,7
+13.06.2004 36,6 42,8 26,6 12,8 7,9 x 2,0 8,0
+07.06.2009 39,9 36,9 25,4 12,7 13,2 x 4,3 7,5
+25.05.2014 48,8 33,1 33,7 9,5 4,0 6,6 4,9 8,2
+26.05.2019 60,0 26,1 19,9 22,7 6,7 9,4 4,3 10,9
+09.06.2024 59,8 29,1 18,3 13,1 6,6 13,0 2,0 17,8
+WeitereDatenzudenEuropawahleninderLandesdatenbankunter:AllgemeineEuropawahlstatistik
+1vormals:PDS.
+2ab2010Zweitstimmenanteile
+1
+Wahlergebnisse seit 1994
+für Leverkusen, krfr. Stadt
+Wahlbeteiligung
+100
+8888888888888888833333333333333333,,,,,,,,,,,,,,,,,44444444444444444 %%%%%%%%%%%%%%%%%
+80
+8888888888888888811111111111111111,,,,,,,,,,,,,,,,,00000000000000000 %%%%%%%%%%%%%%%%%
+8888888888888888811111111111111111,,,,,,,,,,,,,,,,,22222222222222222 %%%%%%%%%%%%%%%%%
+7777777777777777799999999999999999,,,,,,,,,,,,,,,,,77777777777777777 %%%%%%%%%%%%%%%%% 7777777777777777788888888888888888,,,,,,,,,,,,,,,,,22222222222222222 %%%%%%%%%%%%%%%%%
+7777777777777777744444444444444444,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+8888888888888888811111111111111111,,,,,,,,,,,,,,,,,22222222222222222 %%%%%%%%%%%%%%%%%
+7777777777777777755555555555555555,,,,,,,,,,,,,,,,,22222222222222222 %%%%%%%%%%%%%%%%%
+7777777777777777711111111111111111,,,,,,,,,,,,,,,,,11111111111111111 %%%%%%%%%%%%%%%%% 7777777777777777722222222222222222,,,,,,,,,,,,,,,,,00000000000000000 %%%%%%%%%%%%%%%%%
+6666666666666666622222222222222222,,,,,,,,,,,,,,,,,99999999999999999 %%%%%%%%%%%%%%%%% 6666666666666666633333333333333333,,,,,,,,,,,,,,,,,77777777777777777 %%%%%%%%%%%%%%%%%
+60
+6666666666666666600000000000000000,,,,,,,,,,,,,,,,,55555555555555555 %%%%%%%%%%%%%%%%%
+5555555555555555588888888888888888,,,,,,,,,,,,,,,,,11111111111111111 %%%%%%%%%%%%%%%%%
+5555555555555555599999999999999999,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+6666666666666666600000000000000000,,,,,,,,,,,,,,,,,55555555555555555 %%%%%%%%%%%%%%%%% 5555555555555555544444444444444444,,,,,,,,,,,,,,,,,66666666666666666 %%%%%%%%%%%%%%%%%
+5555555555555555577777777777777777,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+6666666666666666600000000000000000,,,,,,,,,,,,,,,,,00000000000000000 %%%%%%%%%%%%%%%%%
+5555555555555555511111111111111111,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+5555555555555555500000000000000000,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+4444444444444444499999999999999999,,,,,,,,,,,,,,,,,11111111111111111 %%%%%%%%%%%%%%%%%
+4444444444444444488888888888888888,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%%
+5555555555555555544444444444444444,,,,,,,,,,,,,,,,,00000000000000000 %%%%%%%%%%%%%%%%%
+4444444444444444488888888888888888,,,,,,,,,,,,,,,,,00000000000000000 %%%%%%%%%%%%%%%%%
+4444444444444444466666666666666666,,,,,,,,,,,,,,,,,22222222222222222 %%%%%%%%%%%%%%%%%
+4444444444444444488888888888888888,,,,,,,,,,,,,,,,,55555555555555555 %%%%%%%%%%%%%%%%%
+40 4444444444444444433333333333333333,,,,,,,,,,,,,,,,,88888888888888888 %%%%%%%%%%%%%%%%% 3333333333333333366666666666666666,,,,,,,,,,,,,,,,,66666666666666666 %%%%%%%%%%%%%%%%%
+3333333333333333399999999999999999,,,,,,,,,,,,,,,,,99999999999999999 %%%%%%%%%%%%%%%%%
+0
+1996 1999 2002 2005 2008 2011 2014 2017 2020 2023 2026
+Bundestagswahl Europawahl Kommunalwahl Landtagswahl
+Zweitstimmenanteile der Parteien bei der jeweils letzten Wahl
+Bundestagswahl 2025 Europawahl 2024
+40 40
+28,0 % 29,1 %
+21,4 %
+20 17,2 % 20 18,3 % 17,8 %
+11,8 % 13,1 % 13,0 %
+8,5 % 8,8 %
+6,6 %
+4,3 %
+2,0 %
+0 0
+C
+D
+U
+S
+P
+D
+G
+R
+Ü
+N
+E
+F
+D
+P
+Af
+D
+Die
+Linke¹ Sonstige
+C
+D
+U
+S
+P
+D
+G
+R
+Ü
+N
+E
+F
+D
+P
+Af
+D
+Die
+Linke¹ Sonstige
+Landtagswahl 2022 Kommunalwahl 2025
+40 40
+33,7 %
+31,0 %
+27,6 %
+21,5 %
+20 18,4 % 20
+15,4 %
+12,8 %
+10,9 %
+6,2 % 5,8 % 6,6 % 5,1 %
+3,3 %
+1,7 %
+0 0
+C
+D
+U
+S
+P
+D
+G
+R
+Ü
+N
+E
+F
+D
+P
+Af
+D
+Die
+Linke¹ Sonstige
+C
+D
+U
+S
+P
+D
+G
+R
+Ü
+N
+E
+F
+D
+P
+Af
+D
+Die
+Linke¹ Sonstige
+ErkundenSieweitereVisualisierungenderWahlergebnisseaufunseremDashboard.
+Zeichenerklärung
+– GenauNulloderggf.zurSicherstellungderstatistischenGeheimhaltungaufNullgeändert.
+/ KeineAngaben,daZahlenwertnichtsichergenug.ImFalleinerStichprobenerhebungggf.nichtinderStichprobeenthalten.
+. Zahlenwertunbekanntodergeheim.
+x KeinesinnvolleAussagemöglich.
+2

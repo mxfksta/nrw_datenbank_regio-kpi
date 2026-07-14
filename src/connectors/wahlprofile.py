@@ -1,19 +1,25 @@
 """Konnektor Wahlprofile (statistik.nrw, ``wp{RS}.pdf``).
 
-Extrahiert je Wahlart (Bundestagswahl, Landtagswahl, Europawahl, Kommunalwahl)
-die jeweils LETZTE Wahl:
+Reales Layout (IT.NRW-Template "Wahlergebnisse seit 1994"): je Wahlart ein
+Abschnitt mit einer Tabelle über ALLE Wahlen seit 1994::
+
+    Kommunalwahlen(WahlenzudenRätenderkreisfreienStädte)1994bis2025
+    StimmenanteileinProzent
+    Stichtag Wahlbeteiligungin CDU SPD GRÜNE FDP AfD DieLinke¹ Sonstige
+    Prozent
+    16.10.1994 81,0 37,1 37,4 10,0 3,9 x – 11,5
+    ...
+    14.09.2025 54,0 31,0 21,5 10,9 3,3 15,4 5,1 12,8
+
+Die Parteispalten werden aus der Kopfzeile gelesen (robust gegen Umsortierung),
+Platzhalter (x, –) überspringen die jeweilige Partei. Emittiert wird je Wahlart
+nur die JÜNGSTE Wahl ("letzte Wahl: Stichtag" laut kpi_spec.yaml):
 
 - ``Wahlbeteiligung <Wahlart>``          (%)
 - ``Stimmenanteil <Partei> <Wahlart>``   (%)
 
-``jahr_stichtag`` ist das Wahldatum (falls im PDF erkennbar), sonst das
-Wahljahr. Wahlergebnisse sind Einzelereignisse, keine Jahresreihen — avg_3j
-entsteht daher (korrekt) nicht.
-
-Die Wahlarten- und Parteienliste kommt aus kpi_spec.yaml (Cluster "Wahlprofile").
-Der Parser arbeitet auf dem extrahierten PDF-Text (zeilenbasiert, defensiv):
-Abschnitte werden über "<Wahlart> <Jahr>"-Überschriften erkannt; ändert sich
-das Layout grundlegend, gibt es einen SourceLayoutError mit klarer Meldung.
+``jahr_stichtag`` ist das Wahldatum (ISO). Bewusst KEINE historischen Wahlen →
+kein avg_3j über verschiedene Wahlen hinweg (wäre fachlich irreführend).
 """
 
 from __future__ import annotations
@@ -33,36 +39,34 @@ from src.transform import heute, parse_german_number
 
 log = logging.getLogger(__name__)
 
-QUELLE_NAME = "statistik.nrw Wahlprofil"
+QUELLE_NAME = "statistik.nrw Wahlprofil (IT.NRW)"
 
 #: Defaults; kpi_spec.yaml kann sie je Cluster mit `wahlarten:`/`parteien:` überschreiben
 DEFAULT_WAHLARTEN = ["Bundestagswahl", "Landtagswahl", "Europawahl", "Kommunalwahl"]
 DEFAULT_PARTEIEN = ["CDU", "SPD", "GRÜNE", "FDP", "AfD", "DIE LINKE", "Sonstige"]
 
-#: Schreibweisen im PDF → kanonischer Parteiname laut kpi_spec.yaml
+#: Kopfzeilen-Schreibweise (normalisiert: nur Buchstaben, Großschreibung)
+#: → kanonischer Parteiname laut kpi_spec.yaml
 PARTEI_ALIASE: dict[str, str] = {
     "CDU": "CDU",
     "SPD": "SPD",
     "GRÜNE": "GRÜNE",
     "GRUENE": "GRÜNE",
-    "BÜNDNIS 90/DIE GRÜNEN": "GRÜNE",
-    "B90/GRÜNE": "GRÜNE",
     "FDP": "FDP",
     "AFD": "AfD",
-    "DIE LINKE": "DIE LINKE",
+    "DIELINKE": "DIE LINKE",
     "LINKE": "DIE LINKE",
     "SONSTIGE": "Sonstige",
-    "ANDERE": "Sonstige",
-    "ÜBRIGE": "Sonstige",
 }
 
-_PROZENT_RE = r"(\d{1,3}(?:,\d+)?)\s*%?"
-_DATUM_RE = re.compile(r"am\s+(\d{1,2})\.\s*(?:(\d{1,2})\.|([A-Za-zäöüÄÖÜ]+))\s*((?:19|20)\d{2})")
-_MONATSNAMEN = {
-    "januar": 1, "februar": 2, "märz": 3, "april": 4, "mai": 5, "juni": 6,
-    "juli": 7, "august": 8, "september": 9, "oktober": 10, "november": 11,
-    "dezember": 12,
-}
+_PLATZHALTER = {"x", "X", "–", "-", ".", "/"}
+_DATUM_RE = re.compile(r"^(\d{1,2})\.(\d{1,2})\.((?:19|20)\d{2})$")
+
+
+def _normalisiere_partei(token: str) -> str | None:
+    """Kopfzeilen-Token ("DieLinke¹") → kanonischer Name ("DIE LINKE")."""
+    nur_buchstaben = re.sub(r"[^A-Za-zÄÖÜäöü]", "", token).upper()
+    return PARTEI_ALIASE.get(nur_buchstaben)
 
 
 class WahlprofileConnector(Connector):
@@ -84,112 +88,91 @@ class WahlprofileConnector(Connector):
         wahlarten: list[str] = spec.get("wahlarten") or DEFAULT_WAHLARTEN
         parteien: list[str] = spec.get("parteien") or DEFAULT_PARTEIEN
 
-        sections = self._split_sections(text, wahlarten)
-        if not sections:
+        # Abschnitts-Erkennung: Zeile beginnt mit der Wahlart (Text ist
+        # zusammengezogen: "Kommunalwahlen(Wahlenzu…)1994bis2025")
+        alt = "|".join(re.escape(w) for w in wahlarten)
+        header_re = re.compile(rf"^({alt})")
+
+        wahlart: str | None = None
+        spalten: list[str | None] = []  # Parteispalten der aktuellen Tabelle
+        #: Wahlart → (Stichtag ISO, Wahlbeteiligung, {Partei: Anteil})
+        letzte_wahl: dict[str, tuple[str, float | None, dict[str, float]]] = {}
+
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            toks = line.split()
+
+            m = header_re.match(line)
+            if m:
+                wahlart = m.group(1)
+                continue
+
+            # Spalten-Kopfzeile: "Stichtag Wahlbeteiligungin CDU SPD …"
+            if toks[0] == "Stichtag" and len(toks) > 2:
+                spalten = [_normalisiere_partei(t) for t in toks[2:]]
+                continue
+
+            # Datenzeile: "14.09.2025 54,0 31,0 …"
+            dm = _DATUM_RE.match(toks[0])
+            if not (dm and wahlart and len(toks) >= 3):
+                continue
+            stichtag = f"{dm.group(3)}-{int(dm.group(2)):02d}-{int(dm.group(1)):02d}"
+
+            def _wert(token: str) -> float | None:
+                if token in _PLATZHALTER:
+                    return None
+                try:
+                    return parse_german_number(token)
+                except ValueError:
+                    return None
+
+            beteiligung = _wert(toks[1])
+            partei_werte: dict[str, float] = {}
+            for spalte, token in zip(spalten, toks[2:]):
+                if spalte is None or spalte not in parteien:
+                    continue
+                wert = _wert(token)
+                if wert is not None:
+                    partei_werte[spalte] = wert
+
+            bisher = letzte_wahl.get(wahlart)
+            if bisher is None or stichtag > bisher[0]:
+                letzte_wahl[wahlart] = (stichtag, beteiligung, partei_werte)
+
+        if not letzte_wahl:
             raise SourceLayoutError(
-                "Wahlprofil-PDF: keine Wahlart-Überschrift gefunden "
-                f"(erwartet z. B. 'Bundestagswahl 2025') — Layout prüfen ({url})"
+                "Wahlprofil-PDF: keine Wahlart-Tabelle gefunden — Template "
+                f"geändert? Parser in wahlprofile.py prüfen ({url})"
             )
 
         stand = heute()
         observations: list[RawObservation] = []
+        for wahlart, (stichtag, beteiligung, partei_werte) in letzte_wahl.items():
+            def obs(kennzahl: str, wert: float) -> RawObservation:
+                return RawObservation(
+                    region=region.name,
+                    regionalschluessel=region.regionalschluessel,
+                    kpi_cluster=CLUSTER_WAHLEN,
+                    kennzahl=kennzahl,
+                    jahr_stichtag=stichtag,
+                    wert=wert,
+                    einheit="%",
+                    quelle_name=QUELLE_NAME,
+                    quelle_url=url,
+                    stand_datum=stand,
+                )
 
-        def obs(kennzahl: str, jahr_stichtag: str, wert: float) -> RawObservation:
-            return RawObservation(
-                region=region.name,
-                regionalschluessel=region.regionalschluessel,
-                kpi_cluster=CLUSTER_WAHLEN,
-                kennzahl=kennzahl,
-                jahr_stichtag=jahr_stichtag,
-                wert=wert,
-                einheit="%",
-                quelle_name=QUELLE_NAME,
-                quelle_url=url,
-                stand_datum=stand,
+            if beteiligung is not None:
+                observations.append(obs(f"Wahlbeteiligung {wahlart}", beteiligung))
+            for partei, wert in partei_werte.items():
+                observations.append(obs(f"Stimmenanteil {partei} {wahlart}", wert))
+
+        fehlend = set(wahlarten) - set(letzte_wahl)
+        if fehlend:
+            log.info(
+                "Wahlprofil: Wahlarten ohne Tabelle",
+                extra={"region": region.name, "fehlend": sorted(fehlend)},
             )
-
-        for wahlart, jahr, section_text in sections:
-            stichtag = self._find_stichtag(section_text) or jahr
-
-            beteiligung_match = re.search(
-                rf"(?i)wahlbeteiligung\D*?{_PROZENT_RE}", section_text
-            )
-            if beteiligung_match:
-                observations.append(
-                    obs(
-                        f"Wahlbeteiligung {wahlart}",
-                        stichtag,
-                        parse_german_number(beteiligung_match.group(1)),
-                    )
-                )
-            else:
-                log.warning(
-                    "Wahlbeteiligung nicht gefunden",
-                    extra={"wahlart": wahlart, "region": region.name},
-                )
-
-            for line in section_text.splitlines():
-                partei = self._match_partei(line, parteien)
-                if partei is None:
-                    continue
-                prozent_match = re.search(rf"{_PROZENT_RE}\s*%?\s*$", line.strip())
-                if prozent_match is None:
-                    prozent_match = re.search(_PROZENT_RE, line.split(maxsplit=1)[-1])
-                if prozent_match is None:
-                    continue
-                kennzahl = f"Stimmenanteil {partei} {wahlart}"
-                if any(o.kennzahl == kennzahl and o.jahr_stichtag == stichtag for o in observations):
-                    continue  # erster Treffer je Partei/Wahl gewinnt
-                observations.append(
-                    obs(kennzahl, stichtag, parse_german_number(prozent_match.group(1)))
-                )
-
         return observations
-
-    @staticmethod
-    def _split_sections(text: str, wahlarten: list[str]) -> list[tuple[str, str, str]]:
-        """Zerlegt den Text an "<Wahlart> <Jahr>"-Überschriften.
-
-        Liefert je Wahlart nur die NEUESTE Wahl (höchstes Jahr) als
-        (wahlart, jahr, abschnittstext).
-        """
-        alt = "|".join(re.escape(w) for w in wahlarten)
-        # ".{0,40}?" statt "\D..." — dazwischen darf ein Datum stehen
-        # ("Bundestagswahl am 23. Februar 2025")
-        header_re = re.compile(rf"(?im)^\s*({alt})(?:en)?\b.{{0,40}}?((?:19|20)\d{{2}})")
-        matches = list(header_re.finditer(text))
-        sections: dict[str, tuple[int, str]] = {}
-        for i, match in enumerate(matches):
-            wahlart, jahr = match.group(1), int(match.group(2))
-            start = match.start()
-            end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-            if wahlart not in sections or jahr > sections[wahlart][0]:
-                sections[wahlart] = (jahr, text[start:end])
-        return [(wahlart, str(jahr), sec) for wahlart, (jahr, sec) in sections.items()]
-
-    @staticmethod
-    def _find_stichtag(section_text: str) -> str | None:
-        """Sucht ein Wahldatum ("am 23. Februar 2025" / "am 14.09.2025") → ISO."""
-        match = _DATUM_RE.search(section_text)
-        if not match:
-            return None
-        tag = int(match.group(1))
-        jahr = match.group(4)
-        if match.group(2):
-            monat = int(match.group(2))
-        else:
-            monat = _MONATSNAMEN.get(match.group(3).lower())
-            if monat is None:
-                return None
-        return f"{jahr}-{monat:02d}-{tag:02d}"
-
-    @staticmethod
-    def _match_partei(line: str, parteien: list[str]) -> str | None:
-        """Erkennt eine Partei am Zeilenanfang (inkl. Aliase, längste zuerst)."""
-        stripped = line.strip().upper()
-        for alias in sorted(PARTEI_ALIASE, key=len, reverse=True):
-            if stripped.startswith(alias):
-                kanonisch = PARTEI_ALIASE[alias]
-                if kanonisch in parteien:
-                    return kanonisch
-        return None

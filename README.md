@@ -61,11 +61,11 @@ Duplikate.
 
 | Quelle | Was | Status |
 |---|---|---|
-| Landesdatenbank NRW (GENESIS-REST, ffcsv) | bevorzugter, maschinenlesbarer Weg für alle statistik.nrw-Kennzahlen | Client fertig; **Tabellencodes je Kennzahl in `kpi_spec.yaml` unter `ldb:` eintragen + kostenlose Registrierung** (`LDB_NRW_USER/PASS`) |
-| Zensus 2022 XLSX (`{RS}000_GRUNDINFO_BEVOELKERUNG.XLSX`) | Demografie-Kern: Einwohner, Anteile weiblich/nichtdeutsch, Altersstruktur | automatisch |
-| Kommunalprofil-PDF (`l{RS}.pdf`) | Fläche, Einkommen, Umsatzsteuer, Pendler, Wohnen, Kaufkraft, Tourismus | automatisch (defensives PDF-Parsing, s. u.) |
-| Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile je Wahlart | automatisch |
-| BA-Statistik (Einzelheft-XLSX, WZ-CSV) | Arbeitslose/-quote, SV-Beschäftigte nach WZ A–U | **URL-Templates einmalig ermitteln** → `BA_EINZELHEFT_URL_TEMPLATE`, `BA_WZ_CSV_URL_TEMPLATE` (die BA verlinkt nur über Suchformulare) |
+| Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 7 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
+| Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
+| Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
+| Landesdatenbank NRW (GENESIS-REST, ffcsv) | bevorzugter, maschinenlesbarer Weg; **einziger Weg für Wohnen (Bestand, Baugenehmigungen/-fertigstellungen) und Tourismus** — beide sind NICHT im Kommunalprofil enthalten | Client fertig; **Tabellencodes je Kennzahl in `kpi_spec.yaml` unter `ldb:` eintragen + kostenlose Registrierung** (`LDB_NRW_USER/PASS`) |
+| BA-Statistik (Einzelheft-XLSX, WZ-CSV) | Arbeitslose/-quote, SV-Beschäftigte nach WZ A–U | Parser fertig; **URL-Templates einmalig ermitteln** → `BA_EINZELHEFT_URL_TEMPLATE`, `BA_WZ_CSV_URL_TEMPLATE` (die BA verlinkt nur über Suchformulare) |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
 dort beschreibende Einträge (z. B. „Altersstruktur (Anteile Altersgruppen)“).
@@ -312,13 +312,16 @@ terraform apply -var project_id="$PROJECT_ID" -var image="$IMAGE"
 
 1. **BA-URL-Templates ermitteln** (Einzelheftsuche → konkrete XLSX/CSV-URLs)
    und als ENV setzen — bis dahin wird die BA-Quelle als SKIPPED geführt.
+   Betrifft: Arbeitslosigkeit (BA), SV-Beschäftigte nach WZ / Branchenmix.
 2. **Landesdatenbank aktivieren:** registrieren, Tabellencodes je Kennzahl
-   verifizieren und in `kpi_spec.yaml` unter `ldb:` eintragen — dann löst der
-   CSV-Pfad das PDF-Parsing für die statistik.nrw-Kennzahlen ab.
-3. **Label-Mappings gegen echte Dateien kalibrieren:** Die Parser sind
-   defensiv gebaut und gegen synthetische Fixtures getestet; der erste Lauf
-   gegen die echten Quellen sollte als `DRY_RUN` erfolgen und die CSV-Ausgabe
-   fachlich geprüft werden (fehlende Labels stehen im Log). Echte Dateien als
-   zusätzliche Fixtures einchecken.
+   verifizieren und in `kpi_spec.yaml` unter `ldb:` eintragen. Damit kommen
+   auch **Immobilien & Wohnen** und **Tourismus** — beide stehen NICHT im
+   Kommunalprofil-PDF (Kandidaten: 31231 Baugenehmigungen, 31121/31111
+   Bestand/Fertigstellungen, 45412 Beherbergung — Codes verifizieren!).
+3. **Template-Drift beobachten:** Die PDF-Parser sind gegen die echten
+   IT.NRW-Templates (Stand 01/2026) kalibriert und gegen echte Fixtures
+   getestet. Ändert IT.NRW das Template, liefert ein Block nichts mehr →
+   sichtbar im Log ("Blöcke ohne Treffer") bzw. als SourceLayoutError; dann
+   Extraktoren in `statistik_nrw.py` nachziehen und Fixtures aktualisieren.
 4. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
    Mobilität (DB-Stationsdaten).
