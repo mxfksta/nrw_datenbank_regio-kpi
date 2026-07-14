@@ -1,0 +1,8 @@
+statistics_code;statistics_label;time_code;time_label;time;1_variable_code;1_variable_label;1_variable_attribute_code;1_variable_attribute_label;2_variable_code;2_variable_label;2_variable_attribute_code;2_variable_attribute_label;value;value_unit;value_variable_code;value_variable_label
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2024;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;;Insgesamt;98234;Anzahl;GAST01;Ankünfte
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2024;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;;Insgesamt;2,5;%;GAST01;Veränderung zum Vorjahr
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2024;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;EUROPA;Europa;80000;Anzahl;GAST01;Ankünfte
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2024;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;;Insgesamt;201334;Anzahl;GAST02;Übernachtungen
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2025;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;;Insgesamt;106107;Anzahl;GAST01;Ankünfte
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2025;KREISE;Kreisfreie Städte und Kreise;05316;Leverkusen, krfr. Stadt;KONNW1;Kontinente der Herkunft;;Insgesamt;224105;Anzahl;GAST02;Übernachtungen
+45412;Monatserhebung im Tourismus;JAHR;Jahr;2025;KREISE;Kreisfreie Städte und Kreise;05382;Rhein-Sieg-Kreis;KONNW1;Kontinente der Herkunft;;Insgesamt;500000;Anzahl;GAST01;Ankünfte

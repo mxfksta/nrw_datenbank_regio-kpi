@@ -65,7 +65,7 @@ Duplikate.
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
 | Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
 | BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 7 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
-| Landesdatenbank NRW (GENESIS-REST, ffcsv) | bevorzugter, maschinenlesbarer Weg; **einziger Weg für Wohnen (Bestand, Baugenehmigungen/-fertigstellungen) und Tourismus** — beide sind NICHT im Kommunalprofil enthalten | Client fertig; **Tabellencodes je Kennzahl in `kpi_spec.yaml` unter `ldb:` eintragen + kostenlose Registrierung** (`LDB_NRW_USER/PASS`) |
+| Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen) + **Tourismus** (Ankünfte, Übernachtungen, Betten) — NICHT im Kommunalprofil enthalten | **Zugang gelöst + `ldb:`-Codes konfiguriert**; Auth über HTTP-Header, Extraktion als async Job (Header-Auth + Job-Polling im Client). Zugangsdaten via `LDB_NRW_USER/PASS`. Kreis-Granularität wird beim ersten Lauf validiert (s. u.) |
 | BA SV-Beschäftigte nach WZ A–U (Branchen im Fokus) | SV-Beschäftigte + Anteil je Wirtschaftszweig | Parser fertig; **WZ-Export-URL noch ermitteln** → `BA_WZ_CSV_URL_TEMPLATE` (interaktiver Report, keine stabile URL) |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind

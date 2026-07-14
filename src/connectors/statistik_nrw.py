@@ -166,15 +166,23 @@ class StatistikNrwConnector(Connector):
 
         stand = heute()
         observations: list[RawObservation] = []
+        # ffcsv je (Tabelle, Regionalvariable) nur EINMAL laden — mehrere
+        # Kennzahlen teilen sich oft eine Tabelle (z. B. Ankünfte + Übernachtungen
+        # aus 45412-04i); die Extraktionen sind teuer.
+        tabellen_cache: dict[tuple[str, str], str] = {}
         for cluster_name, kennzahl_spec in spec_entries:
             ldb = kennzahl_spec["ldb"]
-            text = client.fetch_tablefile(ldb["tabelle"], region.regionalschluessel)
-            for value in parse_ffcsv(text):
-                if ldb.get("inhalt") and not value.inhalt.startswith(ldb["inhalt"]):
-                    continue
-                filters: dict = ldb.get("auspraegungen") or {}
-                if any(value.merkmale.get(m) != a for m, a in filters.items()):
-                    continue
+            regionalvariable = ldb.get("regionalvariable", "")
+            cache_key = (ldb["tabelle"], regionalvariable)
+            if cache_key not in tabellen_cache:
+                tabellen_cache[cache_key] = client.fetch_tablefile(
+                    ldb["tabelle"], region.regionalschluessel, regionalvariable
+                )
+            for value in self._select_ldb_werte(
+                parse_ffcsv(tabellen_cache[cache_key]),
+                inhalt=ldb.get("inhalt", ""),
+                rs=region.regionalschluessel,
+            ):
                 observations.append(
                     RawObservation(
                         region=region.name,
@@ -185,11 +193,36 @@ class StatistikNrwConnector(Connector):
                         wert=value.wert,
                         einheit=kennzahl_spec["einheit"],
                         quelle_name=LDB_QUELLE_NAME,
-                        quelle_url=f"https://www.landesdatenbank.nrw.de (Tabelle {ldb['tabelle']})",
+                        quelle_url=f"https://landesdatenbank.nrw.de (Tabelle {ldb['tabelle']})",
                         stand_datum=stand,
                     )
                 )
         return observations
+
+    @staticmethod
+    def _select_ldb_werte(werte, *, inhalt, rs):
+        """Wählt aus einer ffcsv-Tabelle die passenden Gesamt-Werte einer Region.
+
+        Kriterien (ffcsv-2020):
+        - Messgröße == ``inhalt`` (value_variable_code, z. B. "GAST01")
+        - Einheit ist NICHT ``%`` (schließt „Veränderung zum Vorjahr"-Zeilen aus)
+        - Region: ein Merkmal-Attribut == ``rs`` (5-stellig, Ebene KREISE)
+        - „Insgesamt": alle ÜBRIGEN Merkmal-Attribute leer (keine Aufteilung nach
+          Kontinent/Räumen o. Ä.)
+        """
+        ausgewaehlt = []
+        for v in werte:
+            if inhalt and v.inhalt != inhalt:
+                continue
+            if v.einheit.strip() == "%":
+                continue
+            attribute = list(v.merkmale.values())
+            if rs not in attribute:
+                continue
+            if any(a for a in attribute if a and a != rs):
+                continue  # es gibt eine Aufteilung → nicht der Insgesamt-Wert
+            ausgewaehlt.append(v)
+        return ausgewaehlt
 
     # ------------------------------------------------------------ Zensus 2022
 

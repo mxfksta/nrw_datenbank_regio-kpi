@@ -106,11 +106,21 @@ cluster:
   name: Immobilien & Wohnen
   phase: 1
   kennzahlen:
-  - Wohnungsbestand (Wohnungen)
-  - Baufertigstellungen (Wohnungen)
-  - Baugenehmigungen (Wohnungen)
-  - Bodenrichtwerte (BORIS NRW)
-  quelle_primaer: statistik.nrw Kommunalprofil + BORIS.NRW
+  # Maschinell abrufbar über Landesdatenbank NRW (GENESIS). Tabellencodes +
+  # Wertspalten (inhalt) aus metadata/table verifiziert; regionalvariable=GEMEIN.
+  # Die konkrete Datenzuordnung (v. a. Kreis- vs. Gemeindeebene) wird beim ersten
+  # echten Lauf validiert (siehe README, Offene Punkte).
+  - kennzahl: Wohnungsbestand
+    einheit: Anzahl
+    ldb: {tabelle: 31231-01i, inhalt: WOHN04, regionalvariable: GEMEIN}
+  - kennzahl: Baufertigstellungen
+    einheit: Anzahl Wohnungen
+    ldb: {tabelle: 31121-01i, inhalt: WOHN10, regionalvariable: GEMEIN}
+  - kennzahl: Baugenehmigungen
+    einheit: Anzahl Wohnungen
+    ldb: {tabelle: 31111-01i, inhalt: WOHN10, regionalvariable: GEMEIN}
+  - Bodenrichtwerte (BORIS NRW)   # manuell/Phase 2 (kein stabiler Massendownload)
+  quelle_primaer: statistik.nrw Kommunalprofil + BORIS.NRW + Landesdatenbank NRW
   quelle_url: https://www.boris.nrw.de/
   format: numerisch
 - id: kaufkraft_konsum
@@ -127,10 +137,19 @@ cluster:
   name: Tourismus
   phase: 1
   kennzahlen:
-  - Gaesteankuenfte
-  - Uebernachtungen
-  - Bettenkapazitaet (optional)
-  quelle_primaer: IT.NRW Beherbergungsstatistik (regional)
+  # Landesdatenbank NRW (GENESIS): Ankünfte + Übernachtungen aus 45412-04i,
+  # Bettenkapazität aus 45412-01i. Wertspalten aus metadata/table verifiziert;
+  # regionalvariable=GEMEIN. Datenzuordnung beim ersten echten Lauf validieren.
+  - kennzahl: Gästeankünfte
+    einheit: Anzahl
+    ldb: {tabelle: 45412-04i, inhalt: GAST01, regionalvariable: GEMEIN}
+  - kennzahl: Übernachtungen
+    einheit: Anzahl
+    ldb: {tabelle: 45412-04i, inhalt: GAST02, regionalvariable: GEMEIN}
+  - kennzahl: Bettenkapazität
+    einheit: Anzahl
+    ldb: {tabelle: 45412-01i, inhalt: BTT002, regionalvariable: GEMEIN}
+  quelle_primaer: IT.NRW Beherbergungsstatistik (Landesdatenbank NRW)
   quelle_url: https://www.it.nrw/statistik
   format: numerisch
 - id: veranstaltungen

@@ -179,3 +179,22 @@ def test_zensus_wird_fuer_kreise_uebersprungen(connector):
     kreis = Region("Rhein-Sieg-Kreis", "05382", "Kreis", "Köln")
     with pytest.raises(NotConfiguredError, match="kreisfreie Städte"):
         connector._fetch_zensus(kreis)
+
+
+def test_ldb_auswahl_insgesamt_und_region(connector, fixtures_dir):
+    """LDB-Selektion: Insgesamt-Zeile der richtigen Region, %-Zeilen + Aufteilungen raus."""
+    from src.connectors.landesdatenbank import parse_ffcsv
+
+    werte = parse_ffcsv((fixtures_dir / "ldb_ffcsv_tourismus.csv").read_text(encoding="utf-8"))
+
+    lev = connector._select_ldb_werte(werte, inhalt="GAST01", rs="05316")
+    # Nur Ankünfte-Insgesamt Leverkusen 2024 + 2025 (keine %-, keine Europa-, keine RSK-Zeile)
+    assert {(v.zeit, v.wert) for v in lev} == {("2024", 98234.0), ("2025", 106107.0)}
+
+    # andere Region wird sauber getrennt
+    rsk = connector._select_ldb_werte(werte, inhalt="GAST01", rs="05382")
+    assert {(v.zeit, v.wert) for v in rsk} == {("2025", 500000.0)}
+
+    # Übernachtungen
+    ueb = connector._select_ldb_werte(werte, inhalt="GAST02", rs="05316")
+    assert {(v.zeit, v.wert) for v in ueb} == {("2024", 201334.0), ("2025", 224105.0)}
