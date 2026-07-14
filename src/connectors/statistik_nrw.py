@@ -34,14 +34,17 @@ import openpyxl
 import pdfplumber
 
 from src.config import (
+    CLUSTER_BRANCHENMIX,
     CLUSTER_DEMOGRAFIE,
     CLUSTER_EINKOMMEN,
     CLUSTER_KAUFKRAFT,
     CLUSTER_PENDLER,
+    CLUSTER_SV_WZ,
     CLUSTER_TOURISMUS,
     CLUSTER_WIRTSCHAFT,
     CLUSTER_WOHNEN,
     KOMMUNALPROFIL_PDF_URL,
+    WZ_ABSCHNITT_LABELS,
     ZENSUS_BEVOELKERUNG_XLSX_URL,
     Region,
     load_kpi_spec,
@@ -66,6 +69,14 @@ log = logging.getLogger(__name__)
 ZENSUS_STICHTAG = "2022-05-15"  # amtlicher Zensus-Stichtag
 ZENSUS_QUELLE_NAME = "Zensus 2022 (statistik.nrw Grundinfo Bevölkerung)"
 KOMMUNALPROFIL_QUELLE_NAME = "statistik.nrw Kommunalprofil (IT.NRW)"
+
+# --- SV-Beschäftigte nach Wirtschaftszweigen (Landesdatenbank 13111-50i) ---
+SV_WZ_TABELLE = "13111-50i"
+SV_WZ_INHALT = "ERW032"        # Wertspalte: SV-pflichtig Beschäftigte
+SV_WZ_KLASSIFIKATION = "WZ08S3"  # Merkmal: WZ-2008-Abschnitte
+#: reine Einzelabschnitte "WZ08-A".."WZ08-U" (Aggregate wie "WZ08-B-05" und die
+#: Insgesamt-Zeile "WZ08-A-U" matchen NICHT)
+_WZ08_SECTION_RE = re.compile(r"^WZ08-([A-U])$")
 
 #: Platzhalter in IT.NRW-Tabellen (DIN 55301): kein verwertbarer Zahlenwert
 _PLATZHALTER = {"x", "X", "–", "-", ".", "/", "…"}
@@ -97,7 +108,14 @@ class StatistikNrwConnector(Connector):
         CLUSTER_WOHNEN,
         CLUSTER_KAUFKRAFT,
         CLUSTER_TOURISMUS,
+        CLUSTER_SV_WZ,
+        CLUSTER_BRANCHENMIX,  # Sicht auf SV-WZ (nicht separat materialisiert)
     )
+
+    def __init__(self, settings):
+        super().__init__(settings)
+        # SV-WZ-Tabelle enthält alle Regionen → pro Lauf einmal laden (Instanz-Cache)
+        self._sv_wz_werte = None
 
     # ------------------------------------------------------------------ API
 
@@ -107,6 +125,7 @@ class StatistikNrwConnector(Connector):
 
         teilquellen = (
             ("landesdatenbank", self._fetch_landesdatenbank),
+            ("sv_wz", self._fetch_sv_wz),
             ("zensus", self._fetch_zensus),
             ("kommunalprofil", self._fetch_kommunalprofil),
         )
@@ -223,6 +242,84 @@ class StatistikNrwConnector(Connector):
                 continue  # es gibt eine Aufteilung → nicht der Insgesamt-Wert
             ausgewaehlt.append(v)
         return ausgewaehlt
+
+    # ------------------------------- SV-Beschäftigte nach Wirtschaftszweigen
+
+    def _fetch_sv_wz(self, region: Region) -> list[RawObservation]:
+        """SV-Beschäftigte je WZ-Abschnitt A–U + Anteile (Landesdatenbank 13111-50i).
+
+        Anders als der generische LDB-Pfad werden hier NICHT die Insgesamt-Zeilen
+        gewählt, sondern je WZ-Abschnitt der Bestand (Geschlecht = Insgesamt) plus
+        der berechnete Anteil an der Abschnitts-Summe (WZ08-A-U). Die Tabelle
+        enthält alle Regionen → einmal pro Lauf laden (Instanz-Cache).
+        """
+        client = LandesdatenbankClient(self.settings)
+        if not client.is_configured():
+            raise NotConfiguredError("LDB_NRW_USER/LDB_NRW_PASS nicht gesetzt")
+        if self._sv_wz_werte is None:
+            text = client.fetch_tablefile(SV_WZ_TABELLE, region.regionalschluessel, "GEMEIN")
+            self._sv_wz_werte = parse_ffcsv(text)
+
+        rs = region.regionalschluessel
+
+        def ist_region_insgesamt(v) -> bool:
+            # Messgröße SV-Beschäftigte, keine %-Zeile, Region == rs, und alle
+            # Dimensionen außer WZ08S3 (z. B. Geschlecht) auf „Insgesamt" (leer).
+            if v.inhalt != SV_WZ_INHALT or v.einheit.strip() == "%":
+                return False
+            if rs not in v.merkmale.values():
+                return False
+            for code, attr in v.merkmale.items():
+                if code == SV_WZ_KLASSIFIKATION or attr == rs or not attr:
+                    continue
+                return False
+            return True
+
+        relevant = [v for v in self._sv_wz_werte if ist_region_insgesamt(v)]
+        if not relevant:
+            log.warning("SV-WZ: keine Werte für Region", extra={"rs": rs})
+            return []
+
+        stand = heute()
+        observations: list[RawObservation] = []
+        for jahr in {v.zeit for v in relevant}:
+            # reine Einzelabschnitte A–U (Aggregat-Codes wie WZ08-B-05 fallen raus)
+            sektionen = [
+                (match.group(1), v.wert)
+                for v in relevant
+                if v.zeit == jahr
+                and (match := _WZ08_SECTION_RE.match(str(v.merkmale.get(SV_WZ_KLASSIFIKATION, ""))))
+            ]
+            # Nenner der Anteile: Summe der Abschnitte (robust, ergibt 100 %; die
+            # Insgesamt-Zeile WZ08-A-U ist je nach Abruf nicht verlässlich präsent).
+            summe = sum(w for _, w in sektionen) or None
+            for abschnitt, wert in sektionen:
+                gemeinsam = dict(
+                    region=region.name,
+                    regionalschluessel=rs,
+                    kpi_cluster=CLUSTER_SV_WZ,
+                    jahr_stichtag=jahr,
+                    quelle_name=LDB_QUELLE_NAME,
+                    quelle_url=(
+                        f"https://landesdatenbank.nrw.de (Tabelle {SV_WZ_TABELLE}, "
+                        f"WZ {abschnitt}: {WZ_ABSCHNITT_LABELS.get(abschnitt, '')})"
+                    ),
+                    stand_datum=stand,
+                )
+                observations.append(
+                    RawObservation(
+                        kennzahl=f"SV-Beschäftigte WZ {abschnitt}",
+                        wert=wert, einheit="Anzahl", **gemeinsam,
+                    )
+                )
+                if summe:
+                    observations.append(
+                        RawObservation(
+                            kennzahl=f"Anteil SV-Beschäftigte WZ {abschnitt}",
+                            wert=round(wert / summe * 100, 1), einheit="%", **gemeinsam,
+                        )
+                    )
+        return observations
 
     # ------------------------------------------------------------ Zensus 2022
 

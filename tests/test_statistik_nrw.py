@@ -8,6 +8,7 @@ from src.config import (
     CLUSTER_DEMOGRAFIE,
     KOMMUNALPROFIL_PDF_URL,
     ZENSUS_BEVOELKERUNG_XLSX_URL,
+    Settings,
 )
 from src.connectors.base import SourceLayoutError
 from src.connectors.statistik_nrw import StatistikNrwConnector
@@ -198,3 +199,44 @@ def test_ldb_auswahl_insgesamt_und_region(connector, fixtures_dir):
     # Übernachtungen
     ueb = connector._select_ldb_werte(werte, inhalt="GAST02", rs="05316")
     assert {(v.zeit, v.wert) for v in ueb} == {("2024", 201334.0), ("2025", 224105.0)}
+
+
+def test_sv_wz_aus_ffcsv(connector, region_lev, fixtures_dir):
+    """SV-Beschäftigte je WZ-Abschnitt + Anteile aus der Landesdatenbank-Tabelle."""
+    import src.connectors.landesdatenbank as ldb
+    from src.connectors.landesdatenbank import parse_ffcsv
+
+    connector.settings = Settings(ldb_user="u", ldb_pass="p", rate_limit_seconds=0.0)
+    connector._sv_wz_werte = parse_ffcsv(
+        (fixtures_dir / "ldb_ffcsv_sv_wz.csv").read_text(encoding="utf-8")
+    )
+    obs = connector._fetch_sv_wz(region_lev)
+
+    bestand = {o.kennzahl: o for o in obs if o.kennzahl.startswith("SV-Beschäftigte")}
+    anteil = {o.kennzahl: o for o in obs if o.kennzahl.startswith("Anteil")}
+
+    # nur reine Abschnitte (C, F, Q) — Insgesamt (A-U) und Aggregat (B-05) NICHT als Abschnitt
+    assert set(bestand) == {"SV-Beschäftigte WZ C", "SV-Beschäftigte WZ F", "SV-Beschäftigte WZ Q"}
+    assert bestand["SV-Beschäftigte WZ C"].wert == 18000.0
+    assert bestand["SV-Beschäftigte WZ C"].einheit == "Anzahl"
+    assert bestand["SV-Beschäftigte WZ C"].kpi_cluster == "SV-Beschäftigte nach Wirtschaftszweigen"
+    assert bestand["SV-Beschäftigte WZ C"].jahr_stichtag == "2025-06-30"
+    # Anteil = Abschnitt / Summe der Abschnitte (18000+2400+8000 = 28400):
+    # C = 18000/28400 ≈ 63.4 %; Anteile summieren sich auf 100 %
+    assert anteil["Anteil SV-Beschäftigte WZ C"].wert == pytest.approx(63.4, abs=0.1)
+    assert sum(a.wert for a in anteil.values()) == pytest.approx(100.0, abs=0.2)
+    # männlich-Zeile (GESM) wird NICHT gezählt (nur Geschlecht=Insgesamt)
+    assert bestand["SV-Beschäftigte WZ C"].wert != 13000.0
+
+
+def test_sv_wz_trennt_regionen(connector, fixtures_dir):
+    from src.config import Region
+    from src.connectors.landesdatenbank import parse_ffcsv
+
+    connector.settings = Settings(ldb_user="u", ldb_pass="p", rate_limit_seconds=0.0)
+    connector._sv_wz_werte = parse_ffcsv(
+        (fixtures_dir / "ldb_ffcsv_sv_wz.csv").read_text(encoding="utf-8")
+    )
+    rsk = connector._fetch_sv_wz(Region("Rhein-Sieg-Kreis", "05382", "Kreis", "Köln"))
+    bestand = {o.kennzahl: o.wert for o in rsk if o.kennzahl.startswith("SV-Beschäftigte")}
+    assert bestand == {"SV-Beschäftigte WZ C": 27000.0}

@@ -44,6 +44,31 @@ CLUSTER_EINZELHANDEL = "Einzelhandel/Innenstadt & Frequenz"
 CLUSTER_BILDUNG = "Bildung & Betreuung"
 CLUSTER_RISIKEN = "Risiken: Starkregen/Hochwasser"
 
+#: WZ-2008-Abschnitte A–U → Klartext-Label (für SV-Beschäftigte nach WZ)
+WZ_ABSCHNITT_LABELS: dict[str, str] = {
+    "A": "Land- und Forstwirtschaft, Fischerei",
+    "B": "Bergbau und Gewinnung von Steinen und Erden",
+    "C": "Verarbeitendes Gewerbe",
+    "D": "Energieversorgung",
+    "E": "Wasserversorgung; Abwasser- und Abfallentsorgung",
+    "F": "Baugewerbe",
+    "G": "Handel; Instandhaltung und Reparatur von Kraftfahrzeugen",
+    "H": "Verkehr und Lagerei",
+    "I": "Gastgewerbe",
+    "J": "Information und Kommunikation",
+    "K": "Erbringung von Finanz- und Versicherungsdienstleistungen",
+    "L": "Grundstücks- und Wohnungswesen",
+    "M": "Freiberufliche, wissenschaftliche und technische Dienstleistungen",
+    "N": "Sonstige wirtschaftliche Dienstleistungen",
+    "O": "Öffentliche Verwaltung, Verteidigung; Sozialversicherung",
+    "P": "Erziehung und Unterricht",
+    "Q": "Gesundheits- und Sozialwesen",
+    "R": "Kunst, Unterhaltung und Erholung",
+    "S": "Erbringung von sonstigen Dienstleistungen",
+    "T": "Private Haushalte",
+    "U": "Exterritoriale Organisationen und Körperschaften",
+}
+
 # ---------------------------------------------------------------------------
 # URL-Templates Phase 1 ({rs} = 5-stelliger Regionalschlüssel)
 # ---------------------------------------------------------------------------
@@ -158,10 +183,9 @@ class Settings:
     ldb_job_poll_attempts: int = 20
     ldb_job_poll_interval_seconds: float = 15.0
     # Bundesagentur für Arbeit — Arbeitslose/Quoten: bundesweite ZIP (stabile
-    # Default-URL, überschreibbar). WZ-Export: Template je Region ({rs}), noch
-    # zu ermitteln (Branchen im Fokus / Interaktiv).
+    # Default-URL, überschreibbar). SV-Beschäftigte nach WZ kommen aus der
+    # Landesdatenbank (statistik_nrw), nicht von der BA.
     ba_einzelheft_zip_url: str = BA_EINZELHEFT_ZIP_URL
-    ba_wz_csv_url_template: str = ""
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -179,7 +203,6 @@ class Settings:
             ldb_pass=os.environ.get("LDB_NRW_PASS", ""),
             ldb_timeout_seconds=float(os.environ.get("LDB_TIMEOUT_SECONDS", "180")),
             ba_einzelheft_zip_url=os.environ.get("BA_EINZELHEFT_ZIP_URL", BA_EINZELHEFT_ZIP_URL),
-            ba_wz_csv_url_template=os.environ.get("BA_WZ_CSV_URL_TEMPLATE", ""),
         )
 
     def validate_for_bq(self) -> None:

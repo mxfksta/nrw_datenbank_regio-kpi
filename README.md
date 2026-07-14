@@ -65,8 +65,7 @@ Duplikate.
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
 | Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
 | BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 7 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
-| Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen) + **Tourismus** (Ankünfte, Übernachtungen, Betten) — NICHT im Kommunalprofil enthalten | **Zugang gelöst + `ldb:`-Codes konfiguriert**; Auth über HTTP-Header, Extraktion als async Job (Header-Auth + Job-Polling im Client). Zugangsdaten via `LDB_NRW_USER/PASS`. Kreis-Granularität wird beim ersten Lauf validiert (s. u.) |
-| BA SV-Beschäftigte nach WZ A–U (Branchen im Fokus) | SV-Beschäftigte + Anteil je Wirtschaftszweig | Parser fertig; **WZ-Export-URL noch ermitteln** → `BA_WZ_CSV_URL_TEMPLATE` (interaktiver Report, keine stabile URL) |
+| Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen), **Tourismus** (Ankünfte, Übernachtungen, Betten) und **SV-Beschäftigte nach WZ A–U** (`13111-50i`, inkl. Anteile) — alle NICHT im Kommunalprofil enthalten | **läuft, live validiert** (Stadt + Kreis); Auth über HTTP-Header, große Tabellen als async Job (Header-Auth + Job-Polling). Zugangsdaten via `LDB_NRW_USER/PASS` |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
 dort beschreibende Einträge (z. B. „Altersstruktur (Anteile Altersgruppen)“).
@@ -330,13 +329,10 @@ Tourismus, kreisfreie Städte **und** Kreise). Wichtig für den Betrieb:
 
 ## Offene Punkte / TODO
 
-1. **BA SV-Beschäftigte nach WZ** (Branchen im Fokus / Interaktiv): stabile
-   Export-URL ermitteln und als `BA_WZ_CSV_URL_TEMPLATE` setzen — bis dahin
-   wird nur dieser Teil als SKIPPED geführt (Arbeitslose/Quoten laufen bereits).
-2. **Template-Drift beobachten:** Die PDF-Parser sind gegen die echten
+1. **Template-Drift beobachten:** Die PDF-Parser sind gegen die echten
    IT.NRW-Templates (Stand 01/2026) kalibriert und gegen echte Fixtures
    getestet. Ändert IT.NRW das Template, liefert ein Block nichts mehr →
    sichtbar im Log ("Blöcke ohne Treffer") bzw. als SourceLayoutError; dann
    Extraktoren in `statistik_nrw.py` nachziehen und Fixtures aktualisieren.
-3. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
+2. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
    Mobilität (DB-Stationsdaten).
