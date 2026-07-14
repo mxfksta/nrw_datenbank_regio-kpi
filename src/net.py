@@ -112,15 +112,24 @@ def http_post(
     settings: Settings,
     *,
     data: dict | None = None,
+    headers: dict | None = None,
+    timeout: float | None = None,
 ) -> requests.Response:
     """POST mit Rate-Limit und Retry/Backoff — für authentifizierte Web-APIs.
 
     Anders als ``http_get`` OHNE robots.txt-Prüfung: Dies ist für Aufrufe
-    programmatischer APIs gedacht (z. B. GENESIS/Landesdatenbank), bei denen
-    Zugangsdaten im FORM-BODY statt in der URL übergeben werden. So landen die
-    Credentials weder in der URL noch in Exceptions/Logs (die nur die URL
-    enthalten). robots.txt regelt Crawler und ist hier nicht einschlägig.
+    programmatischer APIs gedacht (z. B. GENESIS/Landesdatenbank). Zugangsdaten
+    werden als HTTP-HEADER übergeben (``headers``) — nicht in URL oder Body —,
+    sodass sie weder in Logs noch in Exceptions (die nur die URL enthalten)
+    auftauchen. robots.txt regelt Crawler und ist hier nicht einschlägig.
+
+    ``timeout`` überschreibt das Default-Timeout (GENESIS-Extraktionen können
+    server-seitig lange dauern).
     """
+    request_headers = {"User-Agent": settings.user_agent}
+    if headers:
+        request_headers.update(headers)
+    effective_timeout = timeout if timeout is not None else settings.http_timeout_seconds
 
     @retry(
         retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout, RetryableHTTPError)),
@@ -133,8 +142,8 @@ def http_post(
         resp = requests.post(
             url,
             data=data,
-            headers={"User-Agent": settings.user_agent},
-            timeout=settings.http_timeout_seconds,
+            headers=request_headers,
+            timeout=effective_timeout,
         )
         if resp.status_code in (429,) or resp.status_code >= 500:
             raise RetryableHTTPError(f"HTTP {resp.status_code} für {url}")

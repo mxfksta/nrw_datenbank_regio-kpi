@@ -31,7 +31,9 @@ from __future__ import annotations
 
 import csv
 import io
+import json
 import logging
+import time
 from dataclasses import dataclass
 
 from src.config import LDB_GENESIS_BASE_URL, Settings
@@ -41,6 +43,10 @@ from src.transform import parse_german_number
 log = logging.getLogger(__name__)
 
 QUELLE_NAME = "Landesdatenbank NRW (GENESIS)"
+
+#: GENESIS-Statuscodes (Feld Status.Code in JSON-Antworten)
+_CODE_OK = 0
+_CODE_JOB_AUSGELOEST = 99  # Extraktion läuft als Hintergrund-Job → pollen
 
 
 @dataclass(frozen=True)
@@ -100,33 +106,112 @@ def parse_ffcsv(text: str) -> list[FfcsvValue]:
     return values
 
 
+def _status_from_json(text: str) -> tuple[int, str] | None:
+    """Erkennt eine GENESIS-JSON-Statusantwort. None, wenn es Nutzdaten (ffcsv) sind."""
+    stripped = text.lstrip()
+    if not stripped.startswith("{"):
+        return None
+    try:
+        payload = json.loads(stripped)
+    except json.JSONDecodeError:
+        return None
+    status = payload.get("Status") or {}
+    return int(status.get("Code", -1)), str(status.get("Content", ""))
+
+
 class LandesdatenbankClient:
+    """GENESIS-REST-Client.
+
+    Authentifizierung über HTTP-HEADER ``username``/``password`` (so verlangt es
+    die NRW-Instanz laut WADL/OpenAPI; Query-/Body-Auth liefert „Code 15 – nicht
+    berechtigt"). Große Gemeinde-Tabellen werden server-seitig als Job aufbereitet:
+    ``data/tablefile`` mit ``job=true`` liefert bei sofortiger Verfügbarkeit direkt
+    das ffcsv, sonst Status-Code 99 (Auftrag ausgelöst). Dann wird ``catalogue/results``
+    gepollt und das Ergebnis über ``data/resultfile`` abgeholt.
+    """
+
     def __init__(self, settings: Settings):
         self.settings = settings
 
     def is_configured(self) -> bool:
         return bool(self.settings.ldb_user and self.settings.ldb_pass)
 
+    def _auth_headers(self) -> dict:
+        # Zugangsdaten als HTTP-Header → nie in URL/Logs/Exceptions
+        return {"username": self.settings.ldb_user, "password": self.settings.ldb_pass}
+
+    def _post(self, endpoint: str, data: dict) -> str:
+        url = f"{LDB_GENESIS_BASE_URL}/{endpoint}"
+        resp = http_post(
+            url,
+            self.settings,
+            data={**data, "language": "de"},
+            headers=self._auth_headers(),
+            timeout=self.settings.ldb_timeout_seconds,
+        )
+        return resp.text
+
     def fetch_tablefile(self, tabelle: str, regionalschluessel: str) -> str:
         """Ruft eine Tabelle als ffcsv ab, gefiltert auf einen Regionalschlüssel.
 
-        Nutzt POST mit den Zugangsdaten im FORM-BODY (nicht in der URL), damit
-        username/password niemals in Logs oder Exceptions auftauchen.
+        Behandelt sowohl die direkte Auslieferung als auch den Job-Fall (Code 99):
+        pollt ``catalogue/results`` und lädt das fertige Ergebnis per ``resultfile``.
         """
-        url = f"{LDB_GENESIS_BASE_URL}/data/tablefile"
-        data = {
-            "username": self.settings.ldb_user,
-            "password": self.settings.ldb_pass,
+        text = self._post("data/tablefile", {
             "name": tabelle,
             "area": "all",
             "regionalkey": regionalschluessel,
             "format": "ffcsv",
-            "language": "de",
             "compress": "false",
-        }
-        resp = http_post(url, self.settings, data=data)
-        text = resp.text
-        # GENESIS liefert Fehler teils als JSON mit HTTP 200 → defensiv erkennen
-        if text.lstrip().startswith("{"):
-            raise ValueError(f"GENESIS-Fehlerantwort für Tabelle {tabelle}: {text[:300]}")
+            "job": "true",
+        })
+        status = _status_from_json(text)
+        if status is None:
+            return text  # ffcsv direkt geliefert
+
+        code, content = status
+        if code == _CODE_JOB_AUSGELOEST:
+            log.info(
+                "GENESIS-Job ausgelöst, warte auf Ergebnis",
+                extra={"tabelle": tabelle, "rs": regionalschluessel},
+            )
+            self._wait_for_result(tabelle)
+            return self._fetch_resultfile(tabelle)
+        raise ValueError(
+            f"GENESIS-Fehler für Tabelle {tabelle} (Code {code}): {content[:200]}"
+        )
+
+    def _wait_for_result(self, tabelle: str) -> None:
+        """Pollt catalogue/results, bis das Job-Ergebnis zum Tabellencode vorliegt."""
+        for versuch in range(self.settings.ldb_job_poll_attempts):
+            text = self._post("catalogue/results", {"selection": f"{tabelle}*", "area": "all"})
+            try:
+                payload = json.loads(text)
+            except json.JSONDecodeError:
+                payload = {}
+            treffer = [
+                e for e in (payload.get("List") or [])
+                if str(e.get("Code", "")).startswith(tabelle)
+            ]
+            if treffer:
+                return
+            if versuch < self.settings.ldb_job_poll_attempts - 1:
+                time.sleep(self.settings.ldb_job_poll_interval_seconds)
+        raise TimeoutError(
+            f"GENESIS-Job für {tabelle} nach "
+            f"{self.settings.ldb_job_poll_attempts} Versuchen nicht fertig"
+        )
+
+    def _fetch_resultfile(self, tabelle: str) -> str:
+        text = self._post("data/resultfile", {
+            "name": tabelle,
+            "area": "all",
+            "format": "ffcsv",
+            "compress": "false",
+        })
+        status = _status_from_json(text)
+        if status is not None and status[0] != _CODE_OK:
+            raise ValueError(
+                f"GENESIS-resultfile-Fehler für {tabelle} (Code {status[0]}): {status[1][:200]}"
+            )
         return text

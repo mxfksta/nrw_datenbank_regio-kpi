@@ -152,6 +152,11 @@ class Settings:
     # Landesdatenbank NRW (GENESIS) — optional, bevorzugt wenn gesetzt
     ldb_user: str = ""
     ldb_pass: str = ""
+    # GENESIS-Tabellenextraktionen laufen server-seitig teils als Job und
+    # dauern lange → eigenes, großzügigeres Timeout + Job-Polling.
+    ldb_timeout_seconds: float = 180.0
+    ldb_job_poll_attempts: int = 20
+    ldb_job_poll_interval_seconds: float = 15.0
     # Bundesagentur für Arbeit — Arbeitslose/Quoten: bundesweite ZIP (stabile
     # Default-URL, überschreibbar). WZ-Export: Template je Region ({rs}), noch
     # zu ermitteln (Branchen im Fokus / Interaktiv).
@@ -172,6 +177,7 @@ class Settings:
             user_agent=os.environ.get("HTTP_USER_AGENT", DEFAULT_USER_AGENT),
             ldb_user=os.environ.get("LDB_NRW_USER", ""),
             ldb_pass=os.environ.get("LDB_NRW_PASS", ""),
+            ldb_timeout_seconds=float(os.environ.get("LDB_TIMEOUT_SECONDS", "180")),
             ba_einzelheft_zip_url=os.environ.get("BA_EINZELHEFT_ZIP_URL", BA_EINZELHEFT_ZIP_URL),
             ba_wz_csv_url_template=os.environ.get("BA_WZ_CSV_URL_TEMPLATE", ""),
         )
