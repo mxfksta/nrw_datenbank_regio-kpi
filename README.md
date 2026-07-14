@@ -310,20 +310,33 @@ terraform apply -var project_id="$PROJECT_ID" -var image="$IMAGE"
 - **Höflichkeit:** identifizierender User-Agent, robots.txt wird respektiert,
   Rate-Limit je Host, Retries mit exponentiellem Backoff.
 
+### Landesdatenbank NRW — Betriebshinweise
+
+Der GENESIS-Zugang ist eingerichtet und gegen echte Daten validiert (Wohnen +
+Tourismus, kreisfreie Städte **und** Kreise). Wichtig für den Betrieb:
+
+- **Auth:** Zugangsdaten als HTTP-Header (`LDB_NRW_USER`/`LDB_NRW_PASS`); die
+  Instanz lehnt Query-/Body-Auth mit „Code 15" ab. Ohne Zugangsdaten wird der
+  LDB-Pfad übersprungen und Wohnen/Tourismus bleiben leer.
+- **`regionalvariable` ist entscheidend:** Sie schränkt die Extraktion server-
+  seitig ein (~13 s statt Timeout). Ohne sie extrahiert GENESIS alle Regionen.
+- **Laufzeit:** ~80 s pro Region (mehrere Tabellen), also grob 10 min für alle
+  7 Regionen. GENESIS cached Ergebnisse server-seitig → Folgeläufe sind
+  schneller. Das Cloud-Run-`--task-timeout` (30 min) deckt das ab.
+- **Format:** GENESIS liefert ffcsv-2020 (englische Spalten) als ZIP; der Client
+  entpackt und parst das. Neue `ldb:`-Kennzahlen: Wertspalte (`inhalt`) per
+  `metadata/table` prüfen; die „Insgesamt"-Zeile hat leere Klassifizierungs-
+  Attribute, `%`-Zeilen („Veränderung zum Vorjahr") werden ausgeschlossen.
+
 ## Offene Punkte / TODO
 
 1. **BA SV-Beschäftigte nach WZ** (Branchen im Fokus / Interaktiv): stabile
    Export-URL ermitteln und als `BA_WZ_CSV_URL_TEMPLATE` setzen — bis dahin
    wird nur dieser Teil als SKIPPED geführt (Arbeitslose/Quoten laufen bereits).
-2. **Landesdatenbank aktivieren:** registrieren, Tabellencodes je Kennzahl
-   verifizieren und in `kpi_spec.yaml` unter `ldb:` eintragen. Damit kommen
-   auch **Immobilien & Wohnen** und **Tourismus** — beide stehen NICHT im
-   Kommunalprofil-PDF (Kandidaten: 31231 Baugenehmigungen, 31121/31111
-   Bestand/Fertigstellungen, 45412 Beherbergung — Codes verifizieren!).
-3. **Template-Drift beobachten:** Die PDF-Parser sind gegen die echten
+2. **Template-Drift beobachten:** Die PDF-Parser sind gegen die echten
    IT.NRW-Templates (Stand 01/2026) kalibriert und gegen echte Fixtures
    getestet. Ändert IT.NRW das Template, liefert ein Block nichts mehr →
    sichtbar im Log ("Blöcke ohne Treffer") bzw. als SourceLayoutError; dann
    Extraktoren in `statistik_nrw.py` nachziehen und Fixtures aktualisieren.
-4. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
+3. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
    Mobilität (DB-Stationsdaten).
