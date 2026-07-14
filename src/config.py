@@ -56,6 +56,16 @@ ZENSUS_BEVOELKERUNG_XLSX_URL = (
 # GENESIS-REST-API der Landesdatenbank NRW (bevorzugter, maschinenlesbarer Weg)
 LDB_GENESIS_BASE_URL = "https://www.landesdatenbank.nrw.de/ldbnrwws/rest/2020"
 
+# Bundesagentur für Arbeit — Arbeitslose + Arbeitslosenquoten auf Gemeinde-/
+# Kreisebene, EINE bundesweite ZIP ("dlk" = Deutschland/Länder/Kreise) mit zwei
+# XLSX (Bestand + Quoten), Blatt "Übersicht_Kreise" je Zeile ein Regionalschlüssel.
+# Stabiles URL-Muster; "Aktuell" verweist stets auf den neuesten Berichtsmonat.
+# Per ENV BA_EINZELHEFT_ZIP_URL überschreibbar (z. B. fixer Monat statt Aktuell).
+BA_EINZELHEFT_ZIP_URL = (
+    "https://statistik.arbeitsagentur.de/Statistikdaten/Detail/Aktuell/iiia4/"
+    "gemeinde-arbeitslose-quoten/arbeitslose-quoten-dlk-0-zip.zip?__blob=publicationFile"
+)
+
 DEFAULT_USER_AGENT = (
     "regio-kpi-pipeline/0.1 (+https://github.com/mxfksta/nrw_datenbank_regio-kpi)"
 )
@@ -140,8 +150,10 @@ class Settings:
     # Landesdatenbank NRW (GENESIS) — optional, bevorzugt wenn gesetzt
     ldb_user: str = ""
     ldb_pass: str = ""
-    # Bundesagentur für Arbeit — Download-URL-Templates ({rs} wird ersetzt)
-    ba_einzelheft_url_template: str = ""
+    # Bundesagentur für Arbeit — Arbeitslose/Quoten: bundesweite ZIP (stabile
+    # Default-URL, überschreibbar). WZ-Export: Template je Region ({rs}), noch
+    # zu ermitteln (Branchen im Fokus / Interaktiv).
+    ba_einzelheft_zip_url: str = BA_EINZELHEFT_ZIP_URL
     ba_wz_csv_url_template: str = ""
 
     @classmethod
@@ -158,7 +170,7 @@ class Settings:
             user_agent=os.environ.get("HTTP_USER_AGENT", DEFAULT_USER_AGENT),
             ldb_user=os.environ.get("LDB_NRW_USER", ""),
             ldb_pass=os.environ.get("LDB_NRW_PASS", ""),
-            ba_einzelheft_url_template=os.environ.get("BA_EINZELHEFT_URL_TEMPLATE", ""),
+            ba_einzelheft_zip_url=os.environ.get("BA_EINZELHEFT_ZIP_URL", BA_EINZELHEFT_ZIP_URL),
             ba_wz_csv_url_template=os.environ.get("BA_WZ_CSV_URL_TEMPLATE", ""),
         )
 

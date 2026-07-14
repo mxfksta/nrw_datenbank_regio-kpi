@@ -64,8 +64,9 @@ Duplikate.
 | Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 7 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
 | Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
+| BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 7 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
 | Landesdatenbank NRW (GENESIS-REST, ffcsv) | bevorzugter, maschinenlesbarer Weg; **einziger Weg für Wohnen (Bestand, Baugenehmigungen/-fertigstellungen) und Tourismus** — beide sind NICHT im Kommunalprofil enthalten | Client fertig; **Tabellencodes je Kennzahl in `kpi_spec.yaml` unter `ldb:` eintragen + kostenlose Registrierung** (`LDB_NRW_USER/PASS`) |
-| BA-Statistik (Einzelheft-XLSX, WZ-CSV) | Arbeitslose/-quote, SV-Beschäftigte nach WZ A–U | Parser fertig; **URL-Templates einmalig ermitteln** → `BA_EINZELHEFT_URL_TEMPLATE`, `BA_WZ_CSV_URL_TEMPLATE` (die BA verlinkt nur über Suchformulare) |
+| BA SV-Beschäftigte nach WZ A–U (Branchen im Fokus) | SV-Beschäftigte + Anteil je Wirtschaftszweig | Parser fertig; **WZ-Export-URL noch ermitteln** → `BA_WZ_CSV_URL_TEMPLATE` (interaktiver Report, keine stabile URL) |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
 dort beschreibende Einträge (z. B. „Altersstruktur (Anteile Altersgruppen)“).
@@ -158,7 +159,8 @@ Abhängigkeiten ändern: `requirements.in` editieren, dann
 | `LOG_LEVEL` | `INFO` | Log-Level (JSON-Logs) |
 | `HTTP_TIMEOUT_SECONDS` / `HTTP_RATE_LIMIT_SECONDS` | 60 / 1.0 | HTTP-Verhalten |
 | `LDB_NRW_USER` / `LDB_NRW_PASS` | – | Landesdatenbank NRW (bevorzugter Pfad) |
-| `BA_EINZELHEFT_URL_TEMPLATE` / `BA_WZ_CSV_URL_TEMPLATE` | – | BA-Downloads, `{rs}` wird ersetzt |
+| `BA_EINZELHEFT_ZIP_URL` | (stabile Default-URL) | BA Arbeitslose/Quoten; nur überschreiben, um einen fixen Monat statt „Aktuell" zu ziehen |
+| `BA_WZ_CSV_URL_TEMPLATE` | – | BA WZ-Export, `{rs}` wird ersetzt (noch zu ermitteln) |
 
 Keine Secrets im Code. Lokal: `GOOGLE_APPLICATION_CREDENTIALS` auf einen
 SA-Key zeigen lassen. Auf Cloud Run: Application Default Credentials über die
@@ -310,9 +312,9 @@ terraform apply -var project_id="$PROJECT_ID" -var image="$IMAGE"
 
 ## Offene Punkte / TODO
 
-1. **BA-URL-Templates ermitteln** (Einzelheftsuche → konkrete XLSX/CSV-URLs)
-   und als ENV setzen — bis dahin wird die BA-Quelle als SKIPPED geführt.
-   Betrifft: Arbeitslosigkeit (BA), SV-Beschäftigte nach WZ / Branchenmix.
+1. **BA SV-Beschäftigte nach WZ** (Branchen im Fokus / Interaktiv): stabile
+   Export-URL ermitteln und als `BA_WZ_CSV_URL_TEMPLATE` setzen — bis dahin
+   wird nur dieser Teil als SKIPPED geführt (Arbeitslose/Quoten laufen bereits).
 2. **Landesdatenbank aktivieren:** registrieren, Tabellencodes je Kennzahl
    verifizieren und in `kpi_spec.yaml` unter `ldb:` eintragen. Damit kommen
    auch **Immobilien & Wohnen** und **Tourismus** — beide stehen NICHT im

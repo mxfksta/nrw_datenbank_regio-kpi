@@ -2,35 +2,33 @@
 
 Zwei Teilquellen:
 
-- **Einzelheft "Arbeitslose und Arbeitslosenquoten (Gemeindeebene)"** (XLSX):
-  Arbeitslose (Bestand) + Arbeitslosenquote → Cluster "Arbeitslosigkeit (BA)"
-- **CSV-Export "Beschäftigte nach Wirtschaftszweigen (WZ 2008)"**:
-  SV-Beschäftigte je WZ-Abschnitt A–U + Anteil (%) → Cluster
+- **Arbeitslose + Arbeitslosenquoten (Gemeinde-/Kreisebene)** → Cluster
+  "Arbeitslosigkeit (BA)". Quelle ist EINE bundesweite ZIP ("dlk" =
+  Deutschland/Länder/Kreise) mit zwei XLSX (Bestand + Quoten). Im Blatt
+  ``Übersicht_Kreise`` steht je Zeile ein Regionalschlüssel; die Spalten sind
+  Monatswerte. Wir laden die Datei EINMAL pro Lauf (Instanz-Cache) und filtern
+  daraus alle 7 Regionen — kein Download pro Region, keine Konfiguration nötig
+  (stabile Default-URL, per ENV ``BA_EINZELHEFT_ZIP_URL`` überschreibbar).
+  Emittiert wird der jeweils neueste Berichtsmonat mit Wert (``aktuell``);
+  avg_3j entsteht hier nicht, da die Datei nur ~2 Jahre Monatswerte enthält.
+
+- **SV-Beschäftigte nach Wirtschaftszweigen (WZ A–U)** → Cluster
   "SV-Beschäftigte nach Wirtschaftszweigen" (der Cluster "Branchenmix" ist
-  laut kpi_spec.yaml eine Sicht darauf und wird nicht doppelt materialisiert)
-
-WICHTIG — Konfiguration: Die BA verlinkt ihre Downloads über Suchformulare
-(Einzelheftsuche) bzw. interaktive Portale; es gibt keine dokumentiert
-stabilen Download-URLs. Die konkreten URLs müssen daher einmalig ermittelt
-und als ENV-Templates gesetzt werden (``{rs}`` wird ersetzt):
-
-    BA_EINZELHEFT_URL_TEMPLATE   → XLSX Einzelheft je Region
-    BA_WZ_CSV_URL_TEMPLATE       → CSV Beschäftigte nach WZ je Region
-
-Einstieg zur Ermittlung:
-https://statistik.arbeitsagentur.de/SiteGlobals/Forms/Suche/Einzelheftsuche_Formular.html?nn=27098&topic_f=gemeinde-arbeitslose-quoten
-
-Ohne Konfiguration wird die jeweilige Teilquelle als SKIPPED übersprungen
-(NotConfiguredError) — kein Fehler, aber deutlich geloggt. Die Parser sind
-vollständig implementiert und gegen Fixtures getestet.
+  laut kpi_spec.yaml eine Sicht darauf). Die BA stellt die WZ-Tiefe nur über
+  den interaktiven Report "Branchen im Fokus" bereit; eine stabile Export-URL
+  ist noch zu ermitteln und als ENV ``BA_WZ_CSV_URL_TEMPLATE`` ({rs}) zu
+  hinterlegen. Ohne Konfiguration wird diese Teilquelle als SKIPPED
+  übersprungen (Parser ist implementiert und getestet).
 """
 
 from __future__ import annotations
 
 import csv
+import datetime
 import io
 import logging
 import re
+import zipfile
 from typing import ClassVar
 
 import openpyxl
@@ -50,6 +48,13 @@ from src.transform import heute, parse_german_number
 log = logging.getLogger(__name__)
 
 QUELLE_NAME = "Statistik der Bundesagentur für Arbeit"
+QUELLE_URL_EINZELHEFT = (
+    "https://statistik.arbeitsagentur.de (Arbeitslose und Arbeitslosenquoten, Gemeindeebene)"
+)
+
+#: Dateinamen-Muster der beiden XLSX in der ZIP → Kennzahl + Einheit
+_ARBEITSLOSE_RE = re.compile(r"(?i)arbeitslose(?!nquote)")
+_QUOTEN_RE = re.compile(r"(?i)quote")
 
 #: WZ-2008-Abschnitte A–U; kpi_spec.yaml kann sie je Cluster mit
 #: `wz_abschnitte:` überschreiben
@@ -77,37 +82,22 @@ WZ_ABSCHNITTE: dict[str, str] = {
     "U": "Exterritoriale Organisationen und Körperschaften",
 }
 
-#: Zeilen-Labels im Einzelheft-XLSX (bei Layout-Änderung hier anpassen)
-EINZELHEFT_LABELS: dict[str, str] = {
-    "Arbeitslose": r"(?i)^arbeitslose(\s+insgesamt)?$",
-    "Arbeitslosenquote": r"(?i)^arbeitslosenquote",
-}
-EINZELHEFT_EINHEITEN: dict[str, str] = {
-    "Arbeitslose": "Anzahl",
-    "Arbeitslosenquote": "%",
-}
-
-_MONAT_RE = re.compile(
-    r"(?i)(januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember)"
-    r"\s+((?:19|20)\d{2})"
-)
-_MONAT_NR = {
-    "januar": 1, "februar": 2, "märz": 3, "april": 4, "mai": 5, "juni": 6,
-    "juli": 7, "august": 8, "september": 9, "oktober": 10, "november": 11,
-    "dezember": 12,
-}
-
 
 class ArbeitsagenturConnector(Connector):
     name: ClassVar[str] = "arbeitsagentur"
     phase: ClassVar[int] = 1
-    # Branchenmix ist eine Sicht auf CLUSTER_SV_WZ (siehe README) und wird
-    # hier nur der Vollständigkeit halber als bedient geführt.
+    # Branchenmix ist eine Sicht auf CLUSTER_SV_WZ (siehe README).
     clusters: ClassVar[tuple[str, ...]] = (
         CLUSTER_ARBEITSLOSIGKEIT,
         CLUSTER_SV_WZ,
         CLUSTER_BRANCHENMIX,
     )
+
+    def __init__(self, settings):
+        super().__init__(settings)
+        # RS → {"Arbeitslose": (stichtag, wert), "Arbeitslosenquote": (stichtag, wert)}
+        # Einmal pro Lauf gefüllt (die BA-ZIP ist bundesweit, ~23 MB).
+        self._einzelheft_cache: dict[str, dict[str, tuple[str, float]]] | None = None
 
     def fetch_raw(self, region: Region) -> list[RawObservation]:
         observations: list[RawObservation] = []
@@ -138,94 +128,133 @@ class ArbeitsagenturConnector(Connector):
                 )
 
         if skipped == len(teilquellen):
-            raise NotConfiguredError(
-                "BA_EINZELHEFT_URL_TEMPLATE / BA_WZ_CSV_URL_TEMPLATE nicht gesetzt (siehe README)"
-            )
+            raise NotConfiguredError("Keine BA-Teilquelle lieferte Daten (siehe Logs)")
         if failures and not observations:
             raise ConnectorError(
                 f"Alle BA-Teilquellen für {region.name} fehlgeschlagen: " + " | ".join(failures)
             )
         return observations
 
-    # ------------------------------------------------------------- Einzelheft
+    # ---------------------------------- Arbeitslose + Quoten (bundesweite ZIP)
 
     def _fetch_einzelheft(self, region: Region) -> list[RawObservation]:
-        template = self.settings.ba_einzelheft_url_template
-        if not template:
-            raise NotConfiguredError("BA_EINZELHEFT_URL_TEMPLATE nicht gesetzt")
-        url = template.format(rs=region.regionalschluessel)
-        resp = http_get(url, self.settings)
-        return self.einzelheft_observations(resp.content, region, url)
+        if self._einzelheft_cache is None:
+            self._einzelheft_cache = self._load_einzelheft_zip()
 
-    def einzelheft_observations(
-        self, xlsx_bytes: bytes, region: Region, url: str
-    ) -> list[RawObservation]:
-        """Scannt das Einzelheft-XLSX nach Arbeitslosen-Bestand und -Quote."""
-        compiled = {k: re.compile(p) for k, p in EINZELHEFT_LABELS.items()}
-        werte: dict[str, float] = {}
-        stichtag: str | None = None
-
-        workbook = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True, read_only=True)
-        try:
-            for sheet in workbook.worksheets:
-                for row in sheet.iter_rows(values_only=True):
-                    cells = list(row)
-                    for i, cell in enumerate(cells):
-                        if not isinstance(cell, str):
-                            continue
-                        text = cell.strip()
-                        if stichtag is None:
-                            monat_match = _MONAT_RE.search(text)
-                            if monat_match:
-                                monat = _MONAT_NR[monat_match.group(1).lower()]
-                                stichtag = f"{monat_match.group(2)}-{monat:02d}"
-                        for kennzahl, pattern in compiled.items():
-                            if kennzahl in werte or not pattern.search(text):
-                                continue
-                            for candidate in cells[i + 1:]:
-                                if candidate is None:
-                                    continue
-                                try:
-                                    werte[kennzahl] = parse_german_number(candidate)
-                                    break
-                                except ValueError:
-                                    continue
-        finally:
-            workbook.close()
-
-        if not werte:
-            raise SourceLayoutError(
-                "BA-Einzelheft: weder 'Arbeitslose' noch 'Arbeitslosenquote' gefunden — "
-                f"Layout geändert? EINZELHEFT_LABELS prüfen ({url})"
+        eintrag = self._einzelheft_cache.get(region.regionalschluessel)
+        if not eintrag:
+            log.warning(
+                "BA-Einzelheft: Regionalschlüssel nicht in der bundesweiten Datei",
+                extra={"region": region.name, "rs": region.regionalschluessel},
             )
-        if stichtag is None:
-            raise SourceLayoutError(
-                f"BA-Einzelheft: kein Berichtsmonat (z. B. 'Juni 2025') erkennbar ({url})"
-            )
+            return []
 
         stand = heute()
-        return [
-            RawObservation(
-                region=region.name,
-                regionalschluessel=region.regionalschluessel,
-                kpi_cluster=CLUSTER_ARBEITSLOSIGKEIT,
-                kennzahl=kennzahl,
-                jahr_stichtag=stichtag,
-                wert=wert,
-                einheit=EINZELHEFT_EINHEITEN[kennzahl],
-                quelle_name=QUELLE_NAME,
-                quelle_url=url,
-                stand_datum=stand,
+        observations: list[RawObservation] = []
+        einheiten = {"Arbeitslose": "Anzahl", "Arbeitslosenquote": "%"}
+        for kennzahl, (stichtag, wert) in eintrag.items():
+            observations.append(
+                RawObservation(
+                    region=region.name,
+                    regionalschluessel=region.regionalschluessel,
+                    kpi_cluster=CLUSTER_ARBEITSLOSIGKEIT,
+                    kennzahl=kennzahl,
+                    jahr_stichtag=stichtag,
+                    wert=wert,
+                    einheit=einheiten[kennzahl],
+                    quelle_name=QUELLE_NAME,
+                    quelle_url=QUELLE_URL_EINZELHEFT,
+                    stand_datum=stand,
+                )
             )
-            for kennzahl, wert in werte.items()
-        ]
+        return observations
+
+    def _load_einzelheft_zip(self) -> dict[str, dict[str, tuple[str, float]]]:
+        """Lädt die bundesweite ZIP und parst beide XLSX (Bestand + Quoten)."""
+        url = self.settings.ba_einzelheft_zip_url
+        if not url:
+            raise NotConfiguredError("BA_EINZELHEFT_ZIP_URL ist leer")
+        resp = http_get(url, self.settings)
+        cache: dict[str, dict[str, tuple[str, float]]] = {}
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+            namen = zf.namelist()
+            arbeitslose = next((n for n in namen if _ARBEITSLOSE_RE.search(n) and n.endswith(".xlsx")), None)
+            quoten = next((n for n in namen if _QUOTEN_RE.search(n) and n.endswith(".xlsx")), None)
+            if not arbeitslose or not quoten:
+                raise SourceLayoutError(
+                    f"BA-ZIP: erwartete XLSX (Arbeitslose/Quoten) nicht gefunden, enthalten: {namen}"
+                )
+            for name, kennzahl in ((arbeitslose, "Arbeitslose"), (quoten, "Arbeitslosenquote")):
+                for rs, (stichtag, wert) in self._parse_uebersicht_kreise(zf.read(name)).items():
+                    cache.setdefault(rs, {})[kennzahl] = (stichtag, wert)
+        return cache
+
+    @staticmethod
+    def _parse_uebersicht_kreise(xlsx_bytes: bytes) -> dict[str, tuple[str, float]]:
+        """Parst Blatt 'Übersicht_Kreise': RS → (Stichtag, neuester Monatswert).
+
+        Layout: eine Kopfzeile trägt in den Datenspalten Datums-Werte (Monate),
+        darunter je Region eine Zeile "<RS> <Name>". 'aktuell' = jüngster Monat
+        mit gültigem Wert (Platzhalter/0 der noch nicht berichteten Monate werden
+        von rechts übersprungen).
+        """
+        wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True, read_only=True)
+        try:
+            ws = wb["Übersicht_Kreise"] if "Übersicht_Kreise" in wb.sheetnames else wb.worksheets[0]
+            rows = list(ws.iter_rows(values_only=True))
+        finally:
+            wb.close()
+
+        # Kopfzeile finden: Zeile mit den meisten Datums-Zellen ab Spalte 3
+        header_idx = -1
+        best = 0
+        for i, row in enumerate(rows):
+            n = sum(1 for c in row[3:] if isinstance(c, datetime.datetime))
+            if n > best:
+                best, header_idx = n, i
+        if header_idx < 0:
+            raise SourceLayoutError(
+                "BA-Übersicht_Kreise: keine Datums-Kopfzeile gefunden — Layout geändert?"
+            )
+        datum_spalten = {
+            idx: cell for idx, cell in enumerate(rows[header_idx])
+            if isinstance(cell, datetime.datetime)
+        }
+
+        rs_re = re.compile(r"^(\d{5})\b")
+        ergebnis: dict[str, tuple[str, float]] = {}
+        for row in rows[header_idx + 1:]:
+            if not row or not isinstance(row[0], str):
+                continue
+            m = rs_re.match(row[0].strip())
+            if not m:
+                continue
+            rs = m.group(1)
+            # jüngste Datumsspalte mit gültigem, positivem Wert
+            for idx in sorted(datum_spalten, reverse=True):
+                if idx >= len(row):
+                    continue
+                try:
+                    wert = parse_german_number(row[idx])
+                except (ValueError, TypeError):
+                    continue
+                if wert <= 0:
+                    continue
+                stichtag = datum_spalten[idx].strftime("%Y-%m")
+                ergebnis[rs] = (stichtag, wert)
+                break
+        if not ergebnis:
+            raise SourceLayoutError(
+                "BA-Übersicht_Kreise: keine Regionszeile (RS + Wert) gefunden — Layout geändert?"
+            )
+        return ergebnis
 
     # ------------------------------------------------- Beschäftigte nach WZ
 
     def _fetch_wz_csv(self, region: Region) -> list[RawObservation]:
         template = self.settings.ba_wz_csv_url_template
         if not template:
-            raise NotConfiguredError("BA_WZ_CSV_URL_TEMPLATE nicht gesetzt")
+            raise NotConfiguredError("BA_WZ_CSV_URL_TEMPLATE nicht gesetzt (Branchen im Fokus)")
         url = template.format(rs=region.regionalschluessel)
         resp = http_get(url, self.settings)
         resp.encoding = resp.encoding or "utf-8"
@@ -262,7 +291,6 @@ class ArbeitsagenturConnector(Connector):
                     break
             if len(cells) < 2:
                 continue
-            # WZ-Abschnitt erkennen: eigene Spalte ("A") oder Prefix ("A Land- und ...")
             abschnitt: str | None = None
             wert_cells: list[str] = []
             first = cells[0]
