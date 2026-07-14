@@ -53,8 +53,10 @@ ZENSUS_BEVOELKERUNG_XLSX_URL = (
     "https://statistik.nrw/sites/default/files/municipalinformation/"
     "{rs}000_GRUNDINFO_BEVOELKERUNG.XLSX"
 )
-# GENESIS-REST-API der Landesdatenbank NRW (bevorzugter, maschinenlesbarer Weg)
-LDB_GENESIS_BASE_URL = "https://www.landesdatenbank.nrw.de/ldbnrwws/rest/2020"
+# GENESIS-REST-API der Landesdatenbank NRW (bevorzugter, maschinenlesbarer Weg).
+# Bewusst OHNE "www." — www.landesdatenbank.nrw.de liefert 403/leitet um,
+# landesdatenbank.nrw.de ist der tatsächlich erreichbare Host (verifiziert).
+LDB_GENESIS_BASE_URL = "https://landesdatenbank.nrw.de/ldbnrwws/rest/2020"
 
 # Bundesagentur für Arbeit — Arbeitslose + Arbeitslosenquoten auf Gemeinde-/
 # Kreisebene, EINE bundesweite ZIP ("dlk" = Deutschland/Länder/Kreise) mit zwei
