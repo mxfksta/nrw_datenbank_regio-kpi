@@ -107,6 +107,43 @@ def http_get(url: str, settings: Settings, params: dict | None = None) -> reques
     return _do_get()
 
 
+def http_post(
+    url: str,
+    settings: Settings,
+    *,
+    data: dict | None = None,
+) -> requests.Response:
+    """POST mit Rate-Limit und Retry/Backoff — für authentifizierte Web-APIs.
+
+    Anders als ``http_get`` OHNE robots.txt-Prüfung: Dies ist für Aufrufe
+    programmatischer APIs gedacht (z. B. GENESIS/Landesdatenbank), bei denen
+    Zugangsdaten im FORM-BODY statt in der URL übergeben werden. So landen die
+    Credentials weder in der URL noch in Exceptions/Logs (die nur die URL
+    enthalten). robots.txt regelt Crawler und ist hier nicht einschlägig.
+    """
+
+    @retry(
+        retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout, RetryableHTTPError)),
+        wait=wait_exponential(multiplier=1, min=1, max=30),
+        stop=stop_after_attempt(4),
+        reraise=True,
+    )
+    def _do_post() -> requests.Response:
+        _respect_rate_limit(url, settings)
+        resp = requests.post(
+            url,
+            data=data,
+            headers={"User-Agent": settings.user_agent},
+            timeout=settings.http_timeout_seconds,
+        )
+        if resp.status_code in (429,) or resp.status_code >= 500:
+            raise RetryableHTTPError(f"HTTP {resp.status_code} für {url}")
+        resp.raise_for_status()
+        return resp
+
+    return _do_post()
+
+
 def reset_caches() -> None:
     """Setzt robots.txt-/Rate-Limit-Caches zurück (für Tests)."""
     _robots_cache.clear()

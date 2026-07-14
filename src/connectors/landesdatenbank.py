@@ -35,7 +35,7 @@ import logging
 from dataclasses import dataclass
 
 from src.config import LDB_GENESIS_BASE_URL, Settings
-from src.net import http_get
+from src.net import http_post
 from src.transform import parse_german_number
 
 log = logging.getLogger(__name__)
@@ -108,9 +108,13 @@ class LandesdatenbankClient:
         return bool(self.settings.ldb_user and self.settings.ldb_pass)
 
     def fetch_tablefile(self, tabelle: str, regionalschluessel: str) -> str:
-        """Ruft eine Tabelle als ffcsv ab, gefiltert auf einen Regionalschlüssel."""
+        """Ruft eine Tabelle als ffcsv ab, gefiltert auf einen Regionalschlüssel.
+
+        Nutzt POST mit den Zugangsdaten im FORM-BODY (nicht in der URL), damit
+        username/password niemals in Logs oder Exceptions auftauchen.
+        """
         url = f"{LDB_GENESIS_BASE_URL}/data/tablefile"
-        params = {
+        data = {
             "username": self.settings.ldb_user,
             "password": self.settings.ldb_pass,
             "name": tabelle,
@@ -120,7 +124,7 @@ class LandesdatenbankClient:
             "language": "de",
             "compress": "false",
         }
-        resp = http_get(url, self.settings, params=params)
+        resp = http_post(url, self.settings, data=data)
         text = resp.text
         # GENESIS liefert Fehler teils als JSON mit HTTP 200 → defensiv erkennen
         if text.lstrip().startswith("{"):
