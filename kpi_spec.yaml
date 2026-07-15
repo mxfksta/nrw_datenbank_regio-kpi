@@ -197,15 +197,22 @@ cluster:
   hinweis: Dokumenten-basiert -> Stub.
 - id: bildung_betreuung
   name: Bildung & Betreuung
-  phase: 2
+  phase: 1
   kennzahlen:
-  - Kita-Plaetze/Betreuungsquote
+  # Anzahl Schulen nach Schulform: aus dem Kommunalprofil-PDF (Block-Extraktor
+  # _kp_schulen in statistik_nrw) — je Schulform "Anzahl Schulen <Schulform>".
   - Anzahl Schulen nach Schulform
-  - Bildungsbericht vorhanden (ja/nein, Jahr)
-  quelle_primaer: IT.NRW / Destatis / MK NRW / kinderbetreuung.nrw
+  # Kita: Landesdatenbank 22541-01i, Wertspalten aus metadata/table verifiziert.
+  - kennzahl: Kita-Plätze
+    einheit: Anzahl
+    ldb: {tabelle: 22541-01i, inhalt: PLZ005, regionalvariable: GEMEIN}
+  - kennzahl: Betreute Kinder
+    einheit: Anzahl
+    ldb: {tabelle: 22541-01i, inhalt: KIN003, regionalvariable: GEMEIN}
+  - Bildungsbericht vorhanden (ja/nein, Jahr)   # qualitativ → manuell/Phase 2
+  quelle_primaer: statistik.nrw Kommunalprofil + Landesdatenbank NRW (Kita 22541)
   quelle_url: https://www.it.nrw/statistik
   format: gemischt
-  hinweis: Teilweise automatisierbar (IT.NRW) -> spaeter Phase 1 pruefen.
 - id: risiken_starkregen
   name: 'Risiken: Starkregen/Hochwasser'
   phase: 2

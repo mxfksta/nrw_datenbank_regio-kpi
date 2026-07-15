@@ -123,6 +123,26 @@ def test_kommunalprofil_gewerbe_und_umsatzsteuer(connector, region_lev, kp_lines
     assert serie("Steuerbarer Umsatz")["2023"] == 40645095.0
 
 
+def test_kommunalprofil_schulen(connector, region_lev, kp_lines):
+    obs = connector.kommunalprofil_observations(kp_lines, region_lev, "https://example.org/l.pdf")
+    schulen = {o.kennzahl: o for o in obs if o.kpi_cluster == "Bildung & Betreuung"}
+    assert schulen["Anzahl Schulen Insgesamt"].wert == 40.0
+    assert schulen["Anzahl Schulen Grundschule"].wert == 24.0
+    assert schulen["Anzahl Schulen Gymnasium"].wert == 5.0
+    assert schulen["Anzahl Schulen Insgesamt"].jahr_stichtag == "2024-10-15"
+    assert schulen["Anzahl Schulen Insgesamt"].einheit == "Anzahl"
+    # Schulformen ohne Insgesamt summieren sich auf Insgesamt (24+2+3+2+5 = 36 ≠ 40?
+    # Insgesamt schließt Förderschulen u.a. ein → nur Konsistenz der Einzelformen prüfen)
+    einzeln = {k: o.wert for k, o in schulen.items() if k != "Anzahl Schulen Insgesamt"}
+    assert einzeln == {
+        "Anzahl Schulen Grundschule": 24.0,
+        "Anzahl Schulen Hauptschule": 2.0,
+        "Anzahl Schulen Realschule": 3.0,
+        "Anzahl Schulen Gesamtschule": 2.0,
+        "Anzahl Schulen Gymnasium": 5.0,
+    }
+
+
 def test_kommunalprofil_einkommen(connector, region_lev, kp_lines):
     obs = connector.kommunalprofil_observations(kp_lines, region_lev, "https://example.org/l.pdf")
     by_kennzahl = {o.kennzahl: o for o in obs}

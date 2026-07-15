@@ -34,6 +34,7 @@ import openpyxl
 import pdfplumber
 
 from src.config import (
+    CLUSTER_BILDUNG,
     CLUSTER_BRANCHENMIX,
     CLUSTER_DEMOGRAFIE,
     CLUSTER_EINKOMMEN,
@@ -78,6 +79,33 @@ SV_WZ_KLASSIFIKATION = "WZ08S3"  # Merkmal: WZ-2008-Abschnitte
 #: Insgesamt-Zeile "WZ08-A-U" matchen NICHT)
 _WZ08_SECTION_RE = re.compile(r"^WZ08-([A-U])$")
 
+#: Kommunalprofil-Schultabelle: Kopf-Token-Präfix → Schulform-Label.
+#: Reihenfolge/Spalten werden aus der Kopfzeile gelesen (regionsrobust).
+SCHULFORM_PREFIXE: dict[str, str] = {
+    "Ins": "Insgesamt",
+    "Grund": "Grundschule",
+    "Haupt": "Hauptschule",
+    "Real": "Realschule",
+    "Gesamt": "Gesamtschule",
+    "Sekundar": "Sekundarschule",
+    "Gemeinschaft": "Gemeinschaftsschule",
+    "Gymna": "Gymnasium",
+    "Förder": "Förderschule",
+    "Berufs": "Berufskolleg",
+    "Weiterbild": "Weiterbildungskolleg",
+    "Freie": "Freie Waldorfschule",
+    "Volks": "Volksschule",
+}
+
+
+def _schulform(token: str) -> str | None:
+    """Kopf-Token (z. B. "Grund-") → Schulform-Label, oder None."""
+    wort = re.sub(r"[^A-Za-zÄÖÜäöü]", "", token)
+    for praefix, label in SCHULFORM_PREFIXE.items():
+        if wort.startswith(praefix):
+            return label
+    return None
+
 #: Platzhalter in IT.NRW-Tabellen (DIN 55301): kein verwertbarer Zahlenwert
 _PLATZHALTER = {"x", "X", "–", "-", ".", "/", "…"}
 
@@ -110,6 +138,7 @@ class StatistikNrwConnector(Connector):
         CLUSTER_TOURISMUS,
         CLUSTER_SV_WZ,
         CLUSTER_BRANCHENMIX,  # Sicht auf SV-WZ (nicht separat materialisiert)
+        CLUSTER_BILDUNG,
     )
 
     def __init__(self, settings):
@@ -467,6 +496,7 @@ class StatistikNrwConnector(Connector):
             ("gewerbe", self._kp_gewerbe),
             ("umsatzsteuer", self._kp_umsatzsteuer),
             ("einkommen", self._kp_einkommen),
+            ("schulen", self._kp_schulen),
         ]
 
         observations: list[RawObservation] = []
@@ -704,6 +734,52 @@ class StatistikNrwConnector(Connector):
                                 jahr, zahlen[0], "€")
                         )
             return ergebnisse
+        return []
+
+    @staticmethod
+    def _kp_schulen(lines: list[str], obs) -> list[RawObservation]:
+        """'AllgemeinbildendeSchulen…am15.10.JJJJ' → Anzahl Schulen je Schulform.
+
+        Layout (Spaltenreihenfolge variiert je Region → aus Kopfzeile gelesen):
+            [A]llgemeinbildendeSchulen*)am15.10.2024
+            Ins- Grund- Haupt- Real- Gesamt- Gymna-      ← Kopf-Präfixe
+            gesamt1) schule schule schule schule sium
+            Schulen 40 24 2 3 2 5                          ← Werte je Schulform
+
+        pdfplumber verliert die stilisierte Initiale → '[Aa]?llgemeinbildende'.
+        """
+        for i, line in enumerate(lines):
+            m = re.match(r"[Aa]?llgemeinbildendeSchulen.*?am\s?\d{1,2}\.(\d{1,2})\.(\d{4})", line)
+            if not m:
+                continue
+            stichtag = f"{m.group(2)}-{int(m.group(1)):02d}-15"
+
+            # Kopfzeile: die Folgezeile mit den meisten Schulform-Präfixen
+            schulformen: list[str] = []
+            for folgezeile in lines[i + 1 : i + 5]:
+                kandidaten = [_schulform(t) for t in folgezeile.split()]
+                treffer = [s for s in kandidaten if s]
+                if len(treffer) >= 3:
+                    schulformen = [s for s in kandidaten if s]  # inkl. Position
+                    break
+            if not schulformen:
+                break
+
+            # Datenzeile 'Schulen <werte…>'
+            for folgezeile in lines[i + 1 : i + 10]:
+                toks = folgezeile.split()
+                if not (toks and toks[0] == "Schulen"):
+                    continue
+                zahlen = _zahlen_tokens(toks[1:])
+                if len(zahlen) != len(schulformen):
+                    log.debug("Schulen: Spaltenzahl passt nicht zum Kopf",
+                              extra={"formen": schulformen, "werte": zahlen})
+                    break
+                return [
+                    obs(CLUSTER_BILDUNG, f"Anzahl Schulen {form}", stichtag, wert, "Anzahl")
+                    for form, wert in zip(schulformen, zahlen)
+                ]
+            break
         return []
 
     # ------------------------------------------------------------ Ableitungen

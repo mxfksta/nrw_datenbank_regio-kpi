@@ -37,7 +37,7 @@ Konnektoren (src/connectors/)          Transform (src/transform.py)
   statistik_nrw   Phase 1                aktuellster Wert („aktuell“)
   wahlprofile     Phase 1                Ø 3 neueste Jahre („avg_3j“, nur bei ≥3)
   arbeitsagentur  Phase 1 (konfig.)      Einheiten-/Zahlen-Normalisierung
-  6 × Phase-2-Stubs (manuell)
+  5 × Phase-2-Stubs (manuell)
         ▼
 BigQuery (src/bq_loader.py)   —   DRY_RUN=1: CSVs nach ./out
   fact_kpi      (MERGE, idempotent; Partition: ingested_at DAY;
@@ -61,11 +61,11 @@ Duplikate.
 
 | Quelle | Was | Status |
 |---|---|---|
-| Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 7 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
+| Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 7 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner, **Schulen nach Schulform** | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
 | Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
 | BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 7 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
-| Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen), **Tourismus** (Ankünfte, Übernachtungen, Betten) und **SV-Beschäftigte nach WZ A–U** (`13111-50i`, inkl. Anteile) — alle NICHT im Kommunalprofil enthalten | **läuft, live validiert** (Stadt + Kreis); Auth über HTTP-Header, große Tabellen als async Job (Header-Auth + Job-Polling). Zugangsdaten via `LDB_NRW_USER/PASS` |
+| Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen), **Tourismus** (Ankünfte, Übernachtungen, Betten), **SV-Beschäftigte nach WZ A–U** (`13111-50i`, inkl. Anteile) und **Kita** (Plätze + betreute Kinder, `22541-01i`) — alle NICHT im Kommunalprofil enthalten | **läuft, live validiert** (Stadt + Kreis); Auth über HTTP-Header, große Tabellen als async Job (Header-Auth + Job-Polling). Zugangsdaten via `LDB_NRW_USER/PASS` |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
 dort beschreibende Einträge (z. B. „Altersstruktur (Anteile Altersgruppen)“).
@@ -88,12 +88,16 @@ Objekt mit `ldb:`-Block erweitert:
 `SourceLayoutError` mit Hinweis, welche Konstante zu prüfen ist. Einzelne
 fehlende Labels werden geloggt, brechen aber nichts ab.
 
+**Bildung & Betreuung** wurde nach Phase 1 gehoben: Schulen nach Schulform aus
+dem Kommunalprofil-PDF, Kita-Plätze + betreute Kinder aus der Landesdatenbank
+(beides im `statistik_nrw`-Konnektor). Nur „Bildungsbericht vorhanden" bleibt
+qualitativ/manuell.
+
 **Phase 2 (Stubs, bewusst manuell):** Veranstaltungen, Vereine, Mobilität &
-Erreichbarkeit, Einzelhandel/Innenstadt, Bildung & Betreuung, Risiken
-Starkregen/Hochwasser — Portale ohne stabile API bzw. qualitative Angaben.
-Die Konnektor-Gerüste in `src/connectors/phase2.py` dokumentieren Quellen und
-TODOs; im Lauf erscheinen sie als SKIPPED. Bester Kandidat zum Heben:
-**Bildung** via IT.NRW-Schulstatistik über den Landesdatenbank-Client.
+Erreichbarkeit, Einzelhandel/Innenstadt, Risiken Starkregen/Hochwasser —
+Portale ohne stabile API bzw. qualitative Angaben. Die Konnektor-Gerüste in
+`src/connectors/phase2.py` dokumentieren Quellen und TODOs; im Lauf erscheinen
+sie als SKIPPED.
 
 ---
 
@@ -334,5 +338,8 @@ Tourismus, kreisfreie Städte **und** Kreise). Wichtig für den Betrieb:
    getestet. Ändert IT.NRW das Template, liefert ein Block nichts mehr →
    sichtbar im Log ("Blöcke ohne Treffer") bzw. als SourceLayoutError; dann
    Extraktoren in `statistik_nrw.py` nachziehen und Fixtures aktualisieren.
-2. **Phase 2 heben:** zuerst Bildung (IT.NRW via Landesdatenbank), dann
-   Mobilität (DB-Stationsdaten).
+2. **Restliche Phase-2-Cluster** (Veranstaltungen, Vereine, Mobilität,
+   Einzelhandel, Risiken): keine amtlich-strukturierte Quelle in den bestehenden
+   Verbindungen. Mobilität wäre am ehesten über DB-Stationsdaten hebbar;
+   Betreuungsquote (Bildung) ließe sich aus Kita-Plätzen + Kinderzahl je
+   Altersgruppe ergänzen.

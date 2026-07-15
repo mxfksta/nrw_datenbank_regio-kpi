@@ -8,7 +8,6 @@ import src.main as main_module
 from src.config import Settings
 from src.connectors.base import ManualSourceError
 from src.connectors.phase2 import (
-    BildungConnector,
     EinzelhandelConnector,
     MobilitaetConnector,
     RisikenConnector,
@@ -21,7 +20,6 @@ ALLE_STUBS = [
     VereineConnector,
     MobilitaetConnector,
     EinzelhandelConnector,
-    BildungConnector,
     RisikenConnector,
 ]
 

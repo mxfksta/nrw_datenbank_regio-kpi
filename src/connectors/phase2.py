@@ -17,7 +17,6 @@ from __future__ import annotations
 from typing import ClassVar
 
 from src.config import (
-    CLUSTER_BILDUNG,
     CLUSTER_EINZELHANDEL,
     CLUSTER_MOBILITAET,
     CLUSTER_RISIKEN,
@@ -98,21 +97,11 @@ class EinzelhandelConnector(_ManualConnector):
     clusters: ClassVar[tuple[str, ...]] = (CLUSTER_EINZELHANDEL,)
 
 
-class BildungConnector(_ManualConnector):
-    """Bildung & Betreuung: Kita-Plätze/Betreuungsquote, Schulen nach Schulform, Bildungsbericht.
-
-    Quellen: IT.NRW (Schulstatistik), Destatis, MSB NRW, kinderbetreuung.nrw.
-    TODO für Automatisierung:
-    - IT.NRW-Schulstatistik ist strukturiert verfügbar → Kandidat, um diesen
-      Cluster als ERSTEN nach Phase 1 zu heben (via Landesdatenbank-Client)
-    """
-
-    name: ClassVar[str] = "bildung"
-    clusters: ClassVar[tuple[str, ...]] = (CLUSTER_BILDUNG,)
-    grund: ClassVar[str] = (
-        "Portale uneinheitlich; IT.NRW-Schulstatistik ist strukturiert und "
-        "kann als erstes gehoben werden (Landesdatenbank-Client nutzen)"
-    )
+# Hinweis: Bildung & Betreuung wurde nach Phase 1 gehoben und wird im
+# statistik_nrw-Konnektor bedient (Schulen nach Schulform aus dem Kommunalprofil-
+# PDF, Kita-Plätze/Betreuungsquote aus der Landesdatenbank). Der frühere
+# BildungConnector-Stub entfällt daher. Nicht automatisiert bleibt nur die
+# qualitative Angabe „Bildungsbericht vorhanden".
 
 
 class RisikenConnector(_ManualConnector):

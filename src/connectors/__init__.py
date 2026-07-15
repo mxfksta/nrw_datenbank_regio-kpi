@@ -10,7 +10,6 @@ from src.config import Settings
 from src.connectors.arbeitsagentur import ArbeitsagenturConnector
 from src.connectors.base import Connector
 from src.connectors.phase2 import (
-    BildungConnector,
     EinzelhandelConnector,
     MobilitaetConnector,
     RisikenConnector,
@@ -21,7 +20,8 @@ from src.connectors.statistik_nrw import StatistikNrwConnector
 from src.connectors.wahlprofile import WahlprofileConnector
 
 ALL_CONNECTORS: tuple[type[Connector], ...] = (
-    # Phase 1 — automatisiert
+    # Phase 1 — automatisiert (Bildung: Schulen aus Kommunalprofil + Kita aus
+    # Landesdatenbank, beides im statistik_nrw-Konnektor)
     StatistikNrwConnector,
     WahlprofileConnector,
     ArbeitsagenturConnector,
@@ -30,7 +30,6 @@ ALL_CONNECTORS: tuple[type[Connector], ...] = (
     VereineConnector,
     MobilitaetConnector,
     EinzelhandelConnector,
-    BildungConnector,
     RisikenConnector,
 )
 
