@@ -1,7 +1,7 @@
 # nrw_datenbank_regio-kpi
 
 Quartalsweise Beschaffung **externer, amtlicher/öffentlicher Regional-KPIs** für
-7 Regionen im Kölner/Bonner Raum → Normalisierung → **Google BigQuery**.
+8 Regionen im Kölner/Bonner Raum → Normalisierung → **Google BigQuery**.
 Läuft als Container auf **Cloud Run (Job)**, getriggert von **Cloud Scheduler
 alle 3 Monate**.
 
@@ -11,6 +11,7 @@ alle 3 Monate**.
 
 | Region | Regionalschlüssel |
 |---|---|
+| Köln | 05315 |
 | Leverkusen | 05316 |
 | Bonn | 05314 |
 | Rhein-Sieg-Kreis | 05382 |
@@ -61,10 +62,10 @@ Duplikate.
 
 | Quelle | Was | Status |
 |---|---|---|
-| Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 7 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner, **Schulen nach Schulform** | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
+| Kommunalprofil-PDF (`l{RS}.pdf`) | Hauptquelle, alle 8 Regionen: Einwohner (Jahresreihe 2018–2024), Fläche, Altersstruktur + Anteile weiblich/nichtdeutsch, Pendler (Ein-/Aus-/Saldo), Gewerbean-/-abmeldungen, Umsatzsteuer (Reihe), Primär-/verfügbares Einkommen je Einwohner, **Schulen nach Schulform** | **läuft, gegen echte Dateien kalibriert** (Block-Extraktoren auf IT.NRW-Template) |
 | Wahlprofil-PDF (`wp{RS}.pdf`) | Wahlbeteiligung + Parteienanteile, jeweils letzte Wahl je Wahlart | **läuft, gegen echte Dateien kalibriert** |
 | Zensus 2022 XLSX (`{RS}000_GRUNDINFO_…`) | Einwohner + Anteile zum Zensus-Stichtag 15.05.2022 (Gegenprobe/Basisjahr) | läuft — **nur kreisfreie Städte** (Kreise haben keine Gemeindedatei) |
-| BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 7 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
+| BA Arbeitslose + Quoten (bundesweite ZIP) | Arbeitslose (Bestand) + Arbeitslosenquote, neuester Berichtsmonat, für alle 8 Regionen | **läuft** — eine bundesweite Datei (stabile URL) wird pro Lauf einmal geladen und je RS gefiltert; keine Konfiguration nötig (Default-URL, per `BA_EINZELHEFT_ZIP_URL` überschreibbar) |
 | Landesdatenbank NRW (GENESIS-REST, ffcsv) | **Wohnen** (Wohnungsbestand, Bau­fertig­stellungen/-genehmigungen), **Tourismus** (Ankünfte, Übernachtungen, Betten), **SV-Beschäftigte nach WZ A–U** (`13111-50i`, inkl. Anteile) und **Kita** (Plätze + betreute Kinder, `22541-01i`) — alle NICHT im Kommunalprofil enthalten | **läuft, live validiert** (Stadt + Kreis); Auth über HTTP-Header, große Tabellen als async Job (Header-Auth + Job-Polling). Zugangsdaten via `LDB_NRW_USER/PASS` |
 
 **Zu `kpi_spec.yaml`:** Die Cluster stehen unter `cluster:`; Kennzahlen sind
@@ -324,7 +325,7 @@ Tourismus, kreisfreie Städte **und** Kreise). Wichtig für den Betrieb:
 - **`regionalvariable` ist entscheidend:** Sie schränkt die Extraktion server-
   seitig ein (~13 s statt Timeout). Ohne sie extrahiert GENESIS alle Regionen.
 - **Laufzeit:** ~80 s pro Region (mehrere Tabellen), also grob 10 min für alle
-  7 Regionen. GENESIS cached Ergebnisse server-seitig → Folgeläufe sind
+  8 Regionen. GENESIS cached Ergebnisse server-seitig → Folgeläufe sind
   schneller. Das Cloud-Run-`--task-timeout` (30 min) deckt das ab.
 - **Format:** GENESIS liefert ffcsv-2020 (englische Spalten) als ZIP; der Client
   entpackt und parst das. Neue `ldb:`-Kennzahlen: Wertspalte (`inhalt`) per
