@@ -10,6 +10,9 @@ regionen:
 - region: Bonn
   rs: '05314'
   typ: krfr. Stadt
+- region: Köln
+  rs: '05315'
+  typ: krfr. Stadt
 - region: Rhein-Sieg-Kreis
   rs: 05382
   typ: Kreis

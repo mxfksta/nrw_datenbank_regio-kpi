@@ -5,9 +5,11 @@ from datetime import date
 from typing import ClassVar
 
 import src.main as main_module
-from src.config import Region
+from src.config import Region, load_regions
 from src.connectors.base import Connector
 from src.models import RawObservation
+
+N_REGIONEN = len(load_regions())  # aus regionen.csv (robust gegen neue Regionen)
 
 
 class FakeConnector(Connector):
@@ -55,8 +57,8 @@ def test_dry_run_schreibt_csvs(tmp_path, monkeypatch):
     assert exit_code == 0
 
     fact = _read_csv(tmp_path / "fact_kpi.csv")
-    # 7 Regionen × (aktuell + avg_3j)
-    assert len(fact) == 7 * 2
+    # je Region (aktuell + avg_3j)
+    assert len(fact) == N_REGIONEN * 2
     lev_aktuell = next(
         r for r in fact if r["region"] == "Leverkusen" and r["aggregation"] == "aktuell"
     )
@@ -69,13 +71,13 @@ def test_dry_run_schreibt_csvs(tmp_path, monkeypatch):
     assert lev_avg["jahr_stichtag"] == "2021-2023"
 
     dim = _read_csv(tmp_path / "dim_region.csv")
-    assert len(dim) == 7
+    assert len(dim) == N_REGIONEN
     assert {d["typ"] for d in dim} == {"krfr. Stadt", "Kreis"}
 
     runs = _read_csv(tmp_path / "pipeline_run.csv")
     assert len(runs) == 1
     assert runs[0]["status"] == "success"
-    assert runs[0]["n_rows"] == "14"
+    assert runs[0]["n_rows"] == str(N_REGIONEN * 2)
     assert runs[0]["n_errors"] == "0"
 
 
@@ -94,7 +96,7 @@ def test_dry_run_fehlerisolierung(tmp_path, monkeypatch):
 
     runs = _read_csv(tmp_path / "pipeline_run.csv")
     assert runs[0]["status"] == "partial"
-    assert int(runs[0]["n_errors"]) == 7  # kaputt × 7 Regionen
+    assert int(runs[0]["n_errors"]) == N_REGIONEN  # kaputt × alle Regionen
     assert "kaputt/" in runs[0]["log_summary"]
 
 

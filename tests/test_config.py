@@ -7,6 +7,7 @@ from src.connectors import ALL_CONNECTORS, build_connectors
 ERWARTETE_RS = {
     "Leverkusen": "05316",
     "Bonn": "05314",
+    "Köln": "05315",
     "Rhein-Sieg-Kreis": "05382",
     "Rhein-Erft-Kreis": "05362",
     "Rheinisch-Bergischer Kreis": "05378",
