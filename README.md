@@ -111,7 +111,7 @@ src/
     statistik_nrw.py   # Landesdatenbank > Zensus-XLSX > Kommunalprofil-PDF
     landesdatenbank.py # GENESIS-REST-Client (ffcsv), bevorzugter Pfad
     wahlprofile.py     # wp{RS}.pdf: Beteiligung + Parteien je Wahlart
-    arbeitsagentur.py  # Einzelheft-XLSX + WZ-CSV (URL-Templates per ENV)
+    arbeitsagentur.py  # Arbeitslose + Quoten (bundesweite ZIP)
     phase2.py          # dokumentierte Stubs (manuell)
     __init__.py        # Registry
   models.py            # Pydantic: RawObservation, KpiRecord
