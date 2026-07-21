@@ -212,6 +212,10 @@ cluster:
   - kennzahl: Betreute Kinder
     einheit: Anzahl
     ldb: {tabelle: 22541-01i, inhalt: KIN003, regionalvariable: GEMEIN}
+  # Betreuungsquote unter 6 Jahre: ABGELEITET (betreute Kinder / Kinder unter 6
+  # aus Einwohner × Anteil unter 6) — keine amtliche Quote-Tabelle vorhanden,
+  # daher Naeherung; Berechnung in statistik_nrw._derive_betreuungsquote.
+  - Betreuungsquote unter 6 Jahre (abgeleitet)
   - Bildungsbericht vorhanden (ja/nein, Jahr)   # qualitativ → manuell/Phase 2
   quelle_primaer: statistik.nrw Kommunalprofil + Landesdatenbank NRW (Kita 22541)
   quelle_url: https://www.it.nrw/statistik

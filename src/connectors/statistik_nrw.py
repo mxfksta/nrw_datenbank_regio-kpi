@@ -188,6 +188,7 @@ class StatistikNrwConnector(Connector):
             )
 
         observations.extend(self._derive_pendlersaldo(observations, region))
+        observations.extend(self._derive_betreuungsquote(observations, region))
         return observations
 
     # --------------------------------------------------- Landesdatenbank NRW
@@ -813,3 +814,47 @@ class StatistikNrwConnector(Connector):
                 )
             )
         return saldi
+
+    @staticmethod
+    def _derive_betreuungsquote(
+        observations: list[RawObservation], region: Region
+    ) -> list[RawObservation]:
+        """Betreuungsquote (unter 6 Jahre), ABGELEITET aus vorhandenen KPIs:
+
+            betreute Kinder (Landesdatenbank 22541-01i)
+            ─────────────────────────────────────────────
+            Einwohner × Anteil unter 6 Jahre / 100  (Kommunalprofil)
+
+        Bewusst als Näherung gekennzeichnet: Es gibt keine amtliche
+        Betreuungsquote-Tabelle in der Landesdatenbank; die Alters­abgrenzung
+        (Kita bis Schuleintritt vs. „unter 6") und die Stichtage weichen leicht
+        ab. Nur berechnet, wenn alle drei Eingangswerte vorliegen. Es wird der
+        jeweils aktuellste Wert je Größe verwendet.
+        """
+        def neuester(kennzahl: str) -> RawObservation | None:
+            treffer = [o for o in observations if o.kennzahl == kennzahl]
+            return max(treffer, key=lambda o: o.jahr_stichtag) if treffer else None
+
+        betreute = neuester("Betreute Kinder")
+        einwohner = neuester("Einwohner")
+        anteil_u6 = neuester("Anteil unter 6 Jahre")
+        if not (betreute and einwohner and anteil_u6):
+            return []
+        kinder_u6 = einwohner.wert * anteil_u6.wert / 100
+        if kinder_u6 <= 0:
+            return []
+        quote = round(betreute.wert / kinder_u6 * 100, 1)
+        return [
+            RawObservation(
+                region=region.name,
+                regionalschluessel=region.regionalschluessel,
+                kpi_cluster=CLUSTER_BILDUNG,
+                kennzahl="Betreuungsquote unter 6 Jahre",
+                jahr_stichtag=betreute.jahr_stichtag,
+                wert=quote,
+                einheit="%",
+                quelle_name="abgeleitet (Landesdatenbank Kita + Kommunalprofil Demografie)",
+                quelle_url=betreute.quelle_url,
+                stand_datum=betreute.stand_datum,
+            )
+        ]

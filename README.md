@@ -91,8 +91,11 @@ fehlende Labels werden geloggt, brechen aber nichts ab.
 
 **Bildung & Betreuung** wurde nach Phase 1 gehoben: Schulen nach Schulform aus
 dem Kommunalprofil-PDF, Kita-Plätze + betreute Kinder aus der Landesdatenbank
-(beides im `statistik_nrw`-Konnektor). Nur „Bildungsbericht vorhanden" bleibt
-qualitativ/manuell.
+(beides im `statistik_nrw`-Konnektor). Die **Betreuungsquote unter 6 Jahre** wird
+daraus abgeleitet (betreute Kinder ÷ Kinder unter 6 aus Einwohner × Anteil
+unter 6) — Näherung, da keine amtliche Quote-Tabelle vorliegt; entsprechend
+gekennzeichnet (`quelle_name = "abgeleitet …"`). Nur „Bildungsbericht vorhanden"
+bleibt qualitativ/manuell.
 
 **Phase 2 (Stubs, bewusst manuell):** Veranstaltungen, Vereine, Mobilität &
 Erreichbarkeit, Einzelhandel/Innenstadt, Risiken Starkregen/Hochwasser —

@@ -143,6 +143,49 @@ def test_kommunalprofil_schulen(connector, region_lev, kp_lines):
     }
 
 
+def test_betreuungsquote_ableitung(connector, region_lev):
+    """Betreuungsquote = betreute Kinder / (Einwohner × Anteil unter 6 / 100)."""
+    from datetime import date
+
+    from src.models import RawObservation
+
+    def obs(kennzahl, wert, einheit, jahr):
+        return RawObservation(
+            region="Leverkusen", regionalschluessel="05316",
+            kpi_cluster="Bildung & Betreuung", kennzahl=kennzahl, jahr_stichtag=jahr,
+            wert=wert, einheit=einheit, quelle_name="q", quelle_url="u",
+            stand_datum=date(2026, 7, 14),
+        )
+
+    eingang = [
+        obs("Betreute Kinder", 5768, "Anzahl", "2025-03-01"),
+        obs("Einwohner", 168581, "Anzahl", "2024-12-31"),
+        obs("Anteil unter 6 Jahre", 5.4, "%", "2024-12-31"),
+    ]
+    result = connector._derive_betreuungsquote(eingang, region_lev)
+    assert len(result) == 1
+    q = result[0]
+    assert q.kennzahl == "Betreuungsquote unter 6 Jahre"
+    assert q.kpi_cluster == "Bildung & Betreuung"
+    assert q.einheit == "%"
+    # 5768 / (168581 × 0.054) = 5768 / 9103.4 ≈ 63.4 %
+    assert q.wert == pytest.approx(63.4, abs=0.2)
+
+
+def test_betreuungsquote_ohne_eingang_leer(connector, region_lev):
+    """Fehlt ein Eingangswert, wird keine Quote erzeugt."""
+    from datetime import date
+
+    from src.models import RawObservation
+
+    nur_betreute = [RawObservation(
+        region="Leverkusen", regionalschluessel="05316", kpi_cluster="Bildung & Betreuung",
+        kennzahl="Betreute Kinder", jahr_stichtag="2025-03-01", wert=5768, einheit="Anzahl",
+        quelle_name="q", quelle_url="u", stand_datum=date(2026, 7, 14),
+    )]
+    assert connector._derive_betreuungsquote(nur_betreute, region_lev) == []
+
+
 def test_kommunalprofil_einkommen(connector, region_lev, kp_lines):
     obs = connector.kommunalprofil_observations(kp_lines, region_lev, "https://example.org/l.pdf")
     by_kennzahl = {o.kennzahl: o for o in obs}
