@@ -204,10 +204,10 @@ nicht doppelt materialisiert.
 
 ## Deployment (Cloud Run Job + Cloud Scheduler)
 
-Variablen für alle Befehle:
+Variables used by all commands below:
 
 ```bash
-export PROJECT_ID="mein-gcp-projekt"          # <<< anpassen
+export PROJECT_ID="my-gcp-project"            # <<< change this
 export REGION="europe-west3"
 export REPO="kpi-pipeline"
 export IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/regio-kpi:latest"
@@ -215,7 +215,7 @@ export JOB="regio-kpi-pipeline"
 export SA="kpi-pipeline@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
-### 0. Einmalig: APIs, Service Account, IAM
+### 0. One-time setup: APIs, service account, IAM
 
 ```bash
 gcloud services enable run.googleapis.com cloudscheduler.googleapis.com \
@@ -223,16 +223,16 @@ gcloud services enable run.googleapis.com cloudscheduler.googleapis.com \
   cloudbuild.googleapis.com --project "$PROJECT_ID"
 
 gcloud iam service-accounts create kpi-pipeline \
-  --display-name "KPI-Beschaffungs-Pipeline" --project "$PROJECT_ID"
+  --display-name "KPI acquisition pipeline" --project "$PROJECT_ID"
 
-# Benötigte Rollen des Service Accounts
+# Roles required by the service account
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member "serviceAccount:${SA}" --role roles/bigquery.dataEditor
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member "serviceAccount:${SA}" --role roles/bigquery.jobUser
 ```
 
-### 1. Build & Push nach Artifact Registry
+### 1. Build & push to Artifact Registry
 
 ```bash
 gcloud artifacts repositories create "$REPO" \
@@ -241,7 +241,7 @@ gcloud artifacts repositories create "$REPO" \
 gcloud builds submit --tag "$IMAGE" --project "$PROJECT_ID"
 ```
 
-### 2. Cloud Run **Job** erstellen (nicht Service)
+### 2. Create the Cloud Run **Job** (not a Service)
 
 ```bash
 gcloud run jobs create "$JOB" \
@@ -255,24 +255,26 @@ gcloud run jobs create "$JOB" \
   --set-env-vars "GCP_PROJECT=${PROJECT_ID},BQ_DATASET=kpi_regional,BQ_LOCATION=EU,LOG_LEVEL=INFO" \
   --project "$PROJECT_ID"
 
-# Manueller Testlauf:
+# Manual test run:
 gcloud run jobs execute "$JOB" --region "$REGION" --project "$PROJECT_ID" --wait
 ```
 
-Optional zusätzlich setzen (via `--set-env-vars` bzw. Secret Manager):
-`LDB_NRW_USER`, `LDB_NRW_PASS`, `BA_EINZELHEFT_URL_TEMPLATE`, `BA_WZ_CSV_URL_TEMPLATE`.
+Optional, set additionally (via `--set-env-vars` or Secret Manager — see
+"Landesdatenbank NRW — operational notes" below): `LDB_NRW_USER`, `LDB_NRW_PASS`.
+Without these two, the pipeline still runs — the Landesdatenbank connector
+(Housing, Tourism, employment-by-sector, childcare) is simply skipped.
 
-### 3. Cloud Scheduler: alle 3 Monate
+### 3. Cloud Scheduler: every 3 months
 
-Der Scheduler ruft die Cloud-Run-Admin-API mit OAuth-Token des Service Accounts
-auf; dafür braucht der SA `roles/run.invoker` auf dem Job:
+The scheduler calls the Cloud Run Admin API with an OAuth token of the service
+account; for that, the SA needs `roles/run.invoker` on the job:
 
 ```bash
 gcloud run jobs add-iam-policy-binding "$JOB" \
   --region "$REGION" --project "$PROJECT_ID" \
   --member "serviceAccount:${SA}" --role roles/run.invoker
 
-gcloud scheduler jobs create http "${JOB}-quartal" \
+gcloud scheduler jobs create http "${JOB}-quarterly" \
   --location "$REGION" \
   --schedule "0 6 1 1,4,7,10 *" \
   --time-zone "Europe/Berlin" \
@@ -283,18 +285,18 @@ gcloud scheduler jobs create http "${JOB}-quartal" \
   --project "$PROJECT_ID"
 ```
 
-### 4. IAM-Rollen (Zusammenfassung)
+### 4. IAM roles (summary)
 
-| Principal | Rolle | Zweck |
+| Principal | Role | Purpose |
 |---|---|---|
-| `kpi-pipeline@…` | `roles/bigquery.dataEditor` | Tabellen anlegen/schreiben |
-| `kpi-pipeline@…` | `roles/bigquery.jobUser` | Load-/Query-Jobs (MERGE) |
-| `kpi-pipeline@…` | `roles/run.invoker` (auf dem Job) | Scheduler → Job-Trigger |
+| `kpi-pipeline@…` | `roles/bigquery.dataEditor` | Create/write tables |
+| `kpi-pipeline@…` | `roles/bigquery.jobUser` | Load/query jobs (MERGE) |
+| `kpi-pipeline@…` | `roles/run.invoker` (on the job) | Scheduler → job trigger |
 
-### Terraform-Alternative
+### Terraform alternative
 
-`deploy/main.tf` provisioniert SA + IAM, Artifact Registry, BigQuery-Dataset,
-Cloud Run Job und Scheduler:
+`deploy/main.tf` provisions the service account + IAM, Artifact Registry,
+BigQuery dataset, Cloud Run Job, and Scheduler:
 
 ```bash
 cd deploy
@@ -304,36 +306,38 @@ terraform apply -var project_id="$PROJECT_ID" -var image="$IMAGE"
 
 ---
 
-## Betrieb
+## Operations
 
-- **Logs:** strukturierte JSON-Zeilen auf stdout → Cloud Logging
-  (`severity`, `message`, plus Felder wie `connector`, `region`, `run_id`).
-- **Lauf-Historie:** Tabelle `pipeline_run` — `status` ist `success`,
-  `partial` (einzelne Quellen fehlgeschlagen) oder `failed`; Details in
-  `log_summary`.
-- **Fehlerisolierung:** Ein Fehler in einer Quelle/Region bricht den Lauf nie
-  ab. Exit-Codes: `0` Daten geladen, `1` Laden fehlgeschlagen (fatal),
-  `2` keine einzige Beobachtung beschafft.
-- **Höflichkeit:** identifizierender User-Agent, robots.txt wird respektiert,
-  Rate-Limit je Host, Retries mit exponentiellem Backoff.
+- **Logs:** structured JSON lines on stdout → Cloud Logging
+  (`severity`, `message`, plus fields such as `connector`, `region`, `run_id`).
+- **Run history:** table `pipeline_run` — `status` is `success`,
+  `partial` (some sources failed), or `failed`; details in `log_summary`.
+- **Error isolation:** a failure in one source/region never aborts the run.
+  Exit codes: `0` data loaded, `1` load failed (fatal), `2` not a single
+  observation was collected.
+- **Politeness:** identifying User-Agent, robots.txt is respected, per-host
+  rate limiting, retries with exponential backoff.
 
-### Landesdatenbank NRW — Betriebshinweise
+### Landesdatenbank NRW — operational notes
 
-Der GENESIS-Zugang ist eingerichtet und gegen echte Daten validiert (Wohnen +
-Tourismus, kreisfreie Städte **und** Kreise). Wichtig für den Betrieb:
+GENESIS access is set up and validated against live data (Housing, Tourism,
+SV-employment-by-industry, and childcare; independent cities **and** counties).
+Important for operations:
 
-- **Auth:** Zugangsdaten als HTTP-Header (`LDB_NRW_USER`/`LDB_NRW_PASS`); die
-  Instanz lehnt Query-/Body-Auth mit „Code 15" ab. Ohne Zugangsdaten wird der
-  LDB-Pfad übersprungen und Wohnen/Tourismus bleiben leer.
-- **`regionalvariable` ist entscheidend:** Sie schränkt die Extraktion server-
-  seitig ein (~13 s statt Timeout). Ohne sie extrahiert GENESIS alle Regionen.
-- **Laufzeit:** ~80 s pro Region (mehrere Tabellen), also grob 10 min für alle
-  8 Regionen. GENESIS cached Ergebnisse server-seitig → Folgeläufe sind
-  schneller. Das Cloud-Run-`--task-timeout` (30 min) deckt das ab.
-- **Format:** GENESIS liefert ffcsv-2020 (englische Spalten) als ZIP; der Client
-  entpackt und parst das. Neue `ldb:`-Kennzahlen: Wertspalte (`inhalt`) per
-  `metadata/table` prüfen; die „Insgesamt"-Zeile hat leere Klassifizierungs-
-  Attribute, `%`-Zeilen („Veränderung zum Vorjahr") werden ausgeschlossen.
+- **Auth:** credentials go in HTTP headers (`LDB_NRW_USER`/`LDB_NRW_PASS`); the
+  instance rejects query/body auth with "Code 15". Without credentials the LDB
+  path is skipped and Housing/Tourism/SV-employment-by-industry/childcare stay
+  empty (everything else keeps working).
+- **`regionalvariable` is essential:** it restricts extraction server-side
+  (~13s instead of timing out). Without it GENESIS extracts all regions.
+- **Runtime:** ~80s per region (multiple tables), so roughly 10 minutes for
+  all 8 regions. GENESIS caches results server-side → subsequent runs are
+  faster. Cloud Run's `--task-timeout` (30m) covers this.
+- **Format:** GENESIS returns ffcsv-2020 (English column names) as a ZIP; the
+  client unpacks and parses it. Adding new `ldb:` metrics: verify the value
+  column (`inhalt`) via `metadata/table`; the "total" row has empty
+  classification attributes, and `%` rows ("change vs. previous year") are
+  excluded.
 
 ## Offene Punkte / TODO
 
